@@ -91,6 +91,10 @@ def load_model(config:ConfigDict,
         if lora_cfg is not None and bool(lora_cfg.get("enabled", False)):
             num_adapters = int(config.model.num_resolutions) if bool(lora_cfg.get("per_scale", False)) else 1
             pretrained_image_encoder = apply_lora_to_backbone(pretrained_image_encoder, lora_cfg, num_adapters=num_adapters)
+        elif bool(config.model.get("freeze_image_encoder", False)):
+            # No-LoRA ablation with a frozen backbone (only image heads + spatial encoder train).
+            for p in pretrained_image_encoder.parameters():
+                p.requires_grad = False
 
         model = sigmma(config.model, pretrained_image_encoder)
 
