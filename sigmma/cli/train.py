@@ -29,10 +29,15 @@ def cleanup():
     dist.destroy_process_group()
 
 def objective(args, rank=None, world_size=None):
-    fix_seed(42)
     dataset_name = args.config_file.split('/')[-1].split('_')[0]
     config_file = yaml.load(open(args.config_file, "r"), yaml.FullLoader)
     config = ConfigDict(config_file)
+
+    # Seed every source of randomness from train.seed (default 42 keeps old
+    # configs bit-identical): python/numpy/torch RNGs, the DataLoader
+    # generator and the DistributedSampler shuffle order.
+    seed = int(config.train.get("seed", 42))
+    fix_seed(seed)
 
     device = torch.device("cuda", rank)
 
@@ -44,6 +49,7 @@ def objective(args, rank=None, world_size=None):
         print(f"dataset_name: {dataset_name}")
         print(f"Training model: {model_name}")
         print(f"image_encoder: {config.model.pretrained_image_encoder}")
+        print(f"seed: {seed}")
 
     config.outdir = config.get("out_dir") if args.out_dir is None else args.out_dir
 
@@ -73,13 +79,13 @@ def objective(args, rank=None, world_size=None):
         print(f"Eval dataset size: {len(eval_dataset)}")
 
     g = torch.Generator()
-    g.manual_seed(42)
+    g.manual_seed(seed)
 
     batch_size = config.get("train.batch_size")
     prefetch_factor = int(config.train.get("prefetch_factor", 4))
     # Train dataloader: full dataset, reshuffled each pass via sampler.set_epoch in the training loop
     if rank is not None:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset, shuffle=True)
+        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset, shuffle=True, seed=seed)
     else:
         train_sampler = torch.utils.data.RandomSampler(train_dataset, generator=g)
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, sampler=train_sampler, worker_init_fn=seed_worker, generator=g, collate_fn=multimodal_collate, num_workers=config.train.num_workers, drop_last=True, persistent_workers=config.train.num_workers > 0, pin_memory=True, prefetch_factor=prefetch_factor if config.train.num_workers > 0 else None)
