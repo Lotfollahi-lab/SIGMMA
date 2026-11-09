@@ -479,7 +479,7 @@ def train(
                                         )
                                 loss = loss / num_resolutions
                                 losses = {'contrastive_loss': loss}
-                                total_loss = sum(losses.values()) #+ model_out["loss_csc_img"] #+ model_out["loss_kl"]
+                                total_loss = sum(losses.values())
                                 losses['loss'] = total_loss
                             else:
                                 # Baselines: GradCache-style negative pooling. The

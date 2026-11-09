@@ -197,27 +197,11 @@ class GRAPHLayerLegacy(torch.nn.Module):
             h = layer(h)
         g_unbatched = [dgl.add_self_loop(graph) for graph in dgl.unbatch(g)]
         g = dgl.batch(g_unbatched)
-        self.kl_terms = []
         for i in range(self.num_gnn_layers):
             h = self.convs[i](g, h)
             h = self.activation(h)
         g = self.sls(g, h, layer_id=layer_id)
-        kl = self.compute_kl_divergence(g)
-        self.kl_terms.append(kl)
         return g, h
-
-    def compute_kl_divergence(self, g, use_edge_norm=True):
-        intra_mask = g.edata['mask'] == -1
-        if use_edge_norm:
-            raw_edge_intra_weight = torch.ones_like(g.edata['weight'][intra_mask])
-            raw_edge_intra_weight = torch.nn.functional.softmax(raw_edge_intra_weight, dim=0)
-        else:
-            raw_edge_intra_weight = torch.ones_like(g.edata['weight'][intra_mask]) / intra_mask.sum()
-        intra_soft_edge = g.edata['weight'][intra_mask]
-        log_p = torch.log(raw_edge_intra_weight + 1e-12)
-        log_q = torch.log(intra_soft_edge + 1e-12)
-        kl = torch.mean(raw_edge_intra_weight * (log_p - log_q))
-        return kl
 
 
 # =====================================================================
@@ -560,27 +544,11 @@ class GRAPHLayer(torch.nn.Module):
         # hot-spot vectorization lives inside StructureLearning below.
         g = dgl.batch([dgl.add_self_loop(gi) for gi in dgl.unbatch(g)])
 
-        self.kl_terms = []
         for i in range(self.num_gnn_layers):
             h = self.convs[i](g, h)
             h = self.activation(h)
         g = self.sls(g, h, layer_id=layer_id)
-        kl = self.compute_kl_divergence(g)
-        self.kl_terms.append(kl)
         return g, h
-
-    def compute_kl_divergence(self, g, use_edge_norm=True):
-        intra_mask = g.edata['mask'] == -1
-        if use_edge_norm:
-            raw_edge_intra_weight = torch.ones_like(g.edata['weight'][intra_mask])
-            raw_edge_intra_weight = torch.nn.functional.softmax(raw_edge_intra_weight, dim=0)
-        else:
-            raw_edge_intra_weight = torch.ones_like(g.edata['weight'][intra_mask]) / intra_mask.sum()
-        intra_soft_edge = g.edata['weight'][intra_mask]
-        log_p = torch.log(raw_edge_intra_weight + 1e-12)
-        log_q = torch.log(intra_soft_edge + 1e-12)
-        kl = torch.mean(raw_edge_intra_weight * (log_p - log_q))
-        return kl
 
 
 class BaseGRAPHLayer(torch.nn.Module):
