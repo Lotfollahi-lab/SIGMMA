@@ -548,8 +548,11 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
                 disjoint.ndata['y_pos'] = torch.from_numpy(y_pos)
                 disjoint.ndata['cell_coordinates'] = torch.from_numpy(self._coords[cells])
                 disjoint.num_subgraphs = n_subfov
+                # Global cell index of each disjoint node (sub-FOV order).
+                sub_global = cells.astype(np.int64)
             else:
                 subgraphs = []
+                sub_global_parts = []
                 for x_g, y_g in product(range(0, self.fov_size, grid_size), range(0, self.fov_size, grid_size)):
                     mask_grid = (
                         (x_start + x_g  <= points[:, 0]) & (points[:, 0] < x_start + x_g + grid_size) &
@@ -564,9 +567,26 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
                     sg.ndata['y_pos'] = torch.full((sg.num_nodes(),), y_g // grid_size)
                     sg.ndata['cell_coordinates'] = torch.from_numpy(points[mask_grid])
                     subgraphs.append(sg)
+                    sub_global_parts.append(np.where(mask_grid)[0])
 
                 disjoint = dgl.batch(subgraphs)
                 disjoint.num_subgraphs = disjoint.batch_size
+                sub_global = np.concatenate(sub_global_parts).astype(np.int64)
+
+            # `spatial_graph` nodes follow AnnData row order (np.where(mask)),
+            # while `disjoint` nodes follow sub-FOV order (dgl.batch concat).
+            # Map each disjoint node to its spatial_graph node via global cell
+            # index before transferring node attributes or comparing edges.
+            full_global = np.where(mask)[0]                     # sorted
+            sub_to_full = np.searchsorted(full_global, sub_global)
+            if sub_global.size != full_global.size or not np.array_equal(
+                    full_global[np.minimum(sub_to_full, full_global.size - 1)], sub_global):
+                raise RuntimeError(
+                    f"Hierarchical sub-FOV cells do not match FOV cells for "
+                    f"{self.section_id} tile idx={idx} "
+                    f"({sub_global.size} vs {full_global.size} cells)."
+                )
+            sub_to_full = torch.from_numpy(sub_to_full)
 
             # Compute edge mask with torch ops (no Python set/dict loops)
             src_full,  dst_full  = spatial_graph.edges()
@@ -574,16 +594,18 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
             N = spatial_graph.num_nodes()
 
             full_ids = src_full * N + dst_full           # unique edge IDs
-            sub_ids  = src_sub  * N + dst_sub
+            sub_ids  = sub_to_full[src_sub] * N + sub_to_full[dst_sub]
 
             # isin via torch (available in torch >= 1.10)
             intra = torch.isin(full_ids, sub_ids)
             edge_mask = torch.where(intra, torch.tensor(-1, dtype=torch.int8),
                                            torch.tensor( 0, dtype=torch.int8))
 
-            spatial_graph.ndata['x_pos'] = disjoint.ndata['x_pos']
-            spatial_graph.ndata['y_pos'] = disjoint.ndata['y_pos']
-            spatial_graph.ndata['cell_coordinates'] = disjoint.ndata['cell_coordinates']
+            for key in ('x_pos', 'y_pos', 'cell_coordinates'):
+                vals = disjoint.ndata[key]
+                aligned = torch.empty((N,) + tuple(vals.shape[1:]), dtype=vals.dtype)
+                aligned[sub_to_full] = vals
+                spatial_graph.ndata[key] = aligned
             spatial_graph.edata['mask'] = edge_mask
             spatial_graph.edata['weight'] = torch.where(
                 edge_mask == -1, torch.tensor(1.0), torch.tensor(0.0)
