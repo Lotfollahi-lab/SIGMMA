@@ -84,6 +84,7 @@ analysis = [
 sigmma-train = "sigmma.cli.train:main"
 sigmma-retrieval = "sigmma.cli.retrieval:main"
 sigmma-extract-embeddings = "sigmma.cli.extract_embeddings:main"
+sigmma-precompute-hier-cache = "sigmma.cli.precompute_hier_cache:main"
 
 [project.urls]
 Homepage = "https://github.com/Lotfollahi-lab/SIGMMA2.0"

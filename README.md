@@ -188,8 +188,8 @@ from this checkout with `python -m pip install .`, or use
 `python -m pip install '.[analysis]'` for downstream analysis dependencies.
 Baseline dependencies belong to the separately installed `benchmarks/` project.
 No default research group or cluster-local package sources are required.
-The SIGMMA command-line entrypoints are `sigmma-train`, `sigmma-retrieval`, and
-`sigmma-extract-embeddings`.
+The SIGMMA command-line entrypoints are `sigmma-train`, `sigmma-retrieval`,
+`sigmma-extract-embeddings`, and `sigmma-precompute-hier-cache`.
 
 ### Data paths
 
@@ -206,6 +206,25 @@ torchrun --standalone --nproc_per_node 1 -m sigmma.cli.train -config_file ${run_
 ```
 
 Before training, follow [Required UNI2-h weights](#required-uni2-h-weights) to download the backbone checkpoint and configure its directory.
+
+### Optional: hierarchical graph cache
+By default the dataset builds each tile's hierarchical sub-FOV graph on the fly,
+so no cache is needed. For large training runs where data loading is the
+bottleneck, pre-compute the graphs once per manifest:
+
+```
+sigmma-precompute-hier-cache --manifest /path/to/MANIFEST_train.csv --out_dir /path/to/hier_cache \
+  --fov_size 256 --num_resolutions 3 --tissue_threshold 20000 --n_workers 16
+```
+
+Then set `hier_cache_dir: /path/to/hier_cache` under each dataset split that
+should use it. `--fov_size`, `--num_resolutions` and `--tissue_threshold` must
+match the dataset's `fov_size`, `num_resolutions` and
+`tissue_filtering_threshold`; a mismatching cache raises an error. Sections
+without a cache file fall back to on-the-fly construction. Add
+`--cache_format source-v2` (new empty `--out_dir` required) to key caches by
+source paths and options instead of section name; rebuild such a cache if the
+data is moved.
 
 ## Downstream Tasks
 ``` 
