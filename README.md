@@ -227,10 +227,3 @@ full-FOV and hierarchical graph features. Its width must match the model's
 `spatial_encoder_input_dim`. Explicit keys override `type_pretrained_cell_embedding`;
 older configs without the key retain the legacy type-to-key mapping.
 Graph caches must match the dataset's cell ordering, coordinates and connectivity.
-
-### Ablation runs
-Ablation configuration generation and protected training entrypoints live in
-`scripts/train/make_ablation_run_config.py` and `scripts/train/train_ablation_protected.py`.
-Submit with `jobscripts/jobscript_ablation_*.sh`; arm configs are in `configs/ablation/`.
-New job logs are written to `logs/job_logs/ablation_*`.
-See `claude_science/sigmma_ablation/README.md` for historical experiment records.
