@@ -1,0 +1,8 @@
+# Docs build only (Read the Docs installs this, not the package itself:
+# sigmma's core dependency dgl>=2.2 is not on PyPI). Heavy runtime imports are
+# mocked in conf.py (autodoc_mock_imports).
+sphinx>=7.3,<8.2
+myst-nb>=1.1
+sphinx-book-theme>=1.1
+sphinx-copybutton>=0.5
+sphinx-design>=0.6

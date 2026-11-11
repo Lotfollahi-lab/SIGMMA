@@ -63,7 +63,9 @@ __pycache__/
 # Folders
 bin
 data
-docs
+docs/_build/
+docs/api/generated/
+docs/tutorials/sigmma_tutorial_outputs/
 figures
 img
 literature/
