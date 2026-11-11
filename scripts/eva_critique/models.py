@@ -381,10 +381,10 @@ def load_sigmma_multiscale(
 # UNI-backbone baseline loaders (controlled-backbone EVA rows)
 # ============================================================
 _BASELINE_CLASS_BY_NAME = {
-    "openAI_CLIP": ("sigmma.model.baselines", "openAI_CLIP"),
-    "PLIP": ("sigmma.model.baselines", "PLIP"),
-    "loki_OmiCLIP": ("sigmma.model.baselines", "loki_OmiCLIP"),
-    "BLEEP": ("sigmma.model.baselines", "BLEEP"),
+    "openAI_CLIP": ("sigmma_benchmarks.baselines.openai_clip", "openAI_CLIP"),
+    "PLIP": ("sigmma_benchmarks.baselines.plip", "PLIP"),
+    "loki_OmiCLIP": ("sigmma_benchmarks.baselines.omiclip", "loki_OmiCLIP"),
+    "BLEEP": ("sigmma_benchmarks.baselines.bleep", "BLEEP"),
 }
 
 

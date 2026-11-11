@@ -69,6 +69,8 @@ class _HFClipLike(nn.Module):
     text tokenisation per forward call. Encoders are frozen.
     """
 
+    spatial_input_key = "spatial_text"
+
     CLIP_MEAN = (0.48145466, 0.4578275, 0.40821073)
     CLIP_STD = (0.26862954, 0.26130258, 0.27577711)
 

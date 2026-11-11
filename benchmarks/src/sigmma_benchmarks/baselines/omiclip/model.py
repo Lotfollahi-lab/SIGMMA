@@ -9,7 +9,7 @@ from typing import List, Optional
 import torch
 import torch.nn as nn
 
-from sigmma.baselines._retrieval_common import _normalize, _UNIImageBackbone
+from sigmma_benchmarks.baselines._retrieval_common import _normalize, _UNIImageBackbone
 from sigmma.model.losses import symmetric_InfoNCE
 
 
@@ -19,6 +19,8 @@ class loki_OmiCLIP(nn.Module):
     Loki's ``utils.load_model`` resolves the checkpoint with ``open_clip``.
     Encoders are frozen; tokenisation is done per forward call.
     """
+
+    spatial_input_key = "spatial_text"
 
     OPENCLIP_MEAN = (0.48145466, 0.4578275, 0.40821073)
     OPENCLIP_STD = (0.26862954, 0.26130258, 0.27577711)

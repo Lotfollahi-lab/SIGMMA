@@ -216,3 +216,6 @@ scripts/tcga_tsr/
 dist/
 build/
 *.egg-info/
+
+# benchmarks/src is package source, not the top-level src scratch dir
+!benchmarks/src/

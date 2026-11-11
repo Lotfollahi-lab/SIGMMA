@@ -11,8 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 
-from sigmma.baselines._retrieval_common import _normalize, _UNIImageBackbone
-from sigmma.model.losses import bleep_cross_entropy
+from sigmma_benchmarks.baselines._retrieval_common import _normalize, _UNIImageBackbone
 
 
 class _BLEEPSpotEncoder(nn.Module):
@@ -62,6 +61,8 @@ class BLEEP(nn.Module):
     expression vector) to the shared latent space. Training uses the BLEEP
     soft-target cross-entropy contrastive loss.
     """
+
+    spatial_input_key = "spatial"
 
     IMAGENET_MEAN = (0.485, 0.456, 0.406)
     IMAGENET_STD = (0.229, 0.224, 0.225)
@@ -174,3 +175,11 @@ class BLEEP(nn.Module):
         loss_si = bleep_cross_entropy(logits, targets, reduction="none")
         loss_is = bleep_cross_entropy(logits.T, targets.T, reduction="none")
         return ((loss_si + loss_is) / 2.0).mean()
+
+def bleep_cross_entropy(preds, targets, reduction='none'):
+    log_softmax = nn.LogSoftmax(dim=-1)
+    loss = (-targets * log_softmax(preds)).sum(1)
+    if reduction == "none":
+        return loss
+    elif reduction == "mean":
+        return loss.mean()

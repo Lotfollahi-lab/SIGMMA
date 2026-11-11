@@ -6,7 +6,7 @@ preprocessing logic with PLIP via ``_HFClipLike``.
 
 from typing import Optional
 
-from sigmma.baselines._retrieval_common import _HFClipLike
+from sigmma_benchmarks.baselines._retrieval_common import _HFClipLike
 
 
 class openAI_CLIP(_HFClipLike):

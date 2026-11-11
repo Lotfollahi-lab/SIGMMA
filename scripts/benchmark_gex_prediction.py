@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader, SequentialSampler, RandomSampler
 from ml_collections.config_dict import ConfigDict
 import yaml
 
-from sigmma.utils import load_dataset, load_model, WandbLogger
+from sigmma.utils import load_dataset, WandbLogger
+from sigmma_benchmarks.models import load_model
 from sigmma.evaluation import linear_probing
 from sigmma.model import UNI, H_optimus_zero, ResNet50
 from sigmma.datasets import multimodal_collate
@@ -84,7 +85,7 @@ def main(args):
     wandb_logger.set_step(0)
 
     # Pass dataset to load_model for BLEEP to determine spot_embedding dynamically
-    multimodal_model = load_model(config, device, pretrained_image_encoder=config.model.get("pretrained_image_encoder", None), pretrained_ckpt_path=config.model.get("checkpoint_path", None), train=False, dataset=dataset)
+    multimodal_model = load_model(config, pretrained_image_encoder=config.model.get("pretrained_image_encoder", None), pretrained_ckpt_path=config.model.get("checkpoint_path", None), train=False)
     multimodal_model.eval()
 
     unimodal_image_encoder_UNI = UNI(checkpoint_path="/nfs/team361/dj16/projects/SIGMMA/assets/ckpts/uni_h/")

@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from sigmma.model.inputs import spatial_input
 
 @torch.no_grad()
 def retrieval_score(model, query_dataloader, reference_dataloader, device, config):
@@ -16,8 +17,6 @@ def retrieval_score(model, query_dataloader, reference_dataloader, device, confi
     return score_matrix_img2spatial.cpu().numpy(), score_matrix_spatial2img.cpu().numpy()
 
 def load_embeddings(model, dataloader, device, config):
-    model_name = config.model.get("name")
-
     image_embed_li = []
     spatial_embed_li = []
     for batch in dataloader:
@@ -25,18 +24,8 @@ def load_embeddings(model, dataloader, device, config):
             continue
         image = batch["image"].to(device)
 
-        if config.model.name == "sigmma":
-            spatial = batch["spatial_graph"].to(device)
-            inputs = [image, spatial]
-        elif model_name in ["openAI_CLIP", "PLIP", "loki_OmiCLIP"]:
-            spatial = batch["spatial_text"]
-            inputs = [image, spatial]
-        elif model_name == "BLEEP":
-            spatial = batch["spatial"].to(device)
-            inputs = [image, spatial]
-        else:
-            raise ValueError(f"Unknown model name: {model_name}")
-        
+        inputs = [image, spatial_input(model, batch, device)]
+
         # Forward pass through the model
         with torch.no_grad():
             with torch.amp.autocast(device.type, enabled=True):
