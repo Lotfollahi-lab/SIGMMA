@@ -1,0 +1,25 @@
+/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'repr' attribute with value False was provided to the `Field()` function, which has no effect in the context it was used. 'repr' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'frozen' attribute with value True was provided to the `Field()` function, which has no effect in the context it was used. 'frozen' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+{
+  "status": "passed",
+  "device": "cuda",
+  "versions": {
+    "sigmma": "2.0.0",
+    "torch": "2.3.1+cu121",
+    "torchvision": "0.18.1+cu121",
+    "dgl": "2.4.0+cu121",
+    "numpy": "1.26.4"
+  },
+  "sigmma_file": "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sigmma/__init__.py",
+  "model_weights_downloaded": false,
+  "checks": [
+    "core_imports",
+    "graphconv_forward_backward",
+    "sageconv_lstm_forward_backward",
+    "edge_softmax",
+    "batch_unbatch",
+    "edge_subgraph"
+  ]
+}

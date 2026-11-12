@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import template
 from typing import Callable, Optional, OrderedDict, Union
 import random
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -22,6 +23,7 @@ import dgl
 from torch.utils.data._utils.collate import collate, collate_tensor_fn, collate_float_fn, collate_int_fn, collate_str_fn
 import torchvision.transforms.functional as TF
 from PIL import Image
+from sigmma.hier_cache import source_metadata, load_hier_cache
 
 collate_fn_map: dict[Union[type, tuple[type, ...]], Callable] = {
     torch.Tensor: collate_tensor_fn
@@ -97,7 +99,7 @@ class MultiSectionDataset(torch.utils.data.Dataset):
                  hierarchical_graph: bool = True,
                  tissue_filtering_threshold: float = 20000,
                  pretrained_cell_embedding: bool = True,
-                 type_pretrained_cell_embedding: str = 'nemo',
+                 type_pretrained_cell_embedding: str = 'terra',
                  is_train: bool = False,
                  model_name: Optional[str] = None,
                  hier_cache_dir: Optional[Path | str] = None,
@@ -107,11 +109,12 @@ class MultiSectionDataset(torch.utils.data.Dataset):
                  k_max: int = 100,
                  use_full_panel: bool = False,
                  gex_lognorm: bool = False,
-                 gex_lognorm_target_sum: float = 1e4):
+                 gex_lognorm_target_sum: float = 1e4,
+                 latent_embedding_name: Optional[str] = None):
         manifest = pd.read_csv(manifest_path)
         # Dedupe by sample_name — some slides (e.g. Sml4-PNC) have multiple
-        # rows pointing at different sequencing runs. ``keep="last"`` matches
-        # the pre-computed hier_cache (built from the second/RUN2 entry).
+        # rows pointing at different sequencing runs. Keep the manifest's last
+        # entry; source-specific caches must match that source, not just its name.
         manifest = manifest.drop_duplicates(subset="sample_name", keep="last").reset_index(drop=True)
         slides = manifest['sample_name']
         li_datsets = []
@@ -136,6 +139,7 @@ class MultiSectionDataset(torch.utils.data.Dataset):
                 tissue_filtering_threshold=tissue_filtering_threshold,
                 pretrained_cell_embedding=pretrained_cell_embedding,
                 type_pretrained_cell_embedding=type_pretrained_cell_embedding,
+                latent_embedding_name=latent_embedding_name,
                 is_train=is_train,
                 model_name=model_name,
                 hier_cache_dir=hier_cache_dir,
@@ -299,14 +303,8 @@ class MultiSectionDataset(torch.utils.data.Dataset):
     def get_num_genes(self):
         """Returns the number of genes or embedding dimension depending on whether pretrained embeddings are used."""
         if self.first_dataset.pretrained_cell_embedding:
-            # Return the embedding dimension instead of gene count
-            if self.first_dataset.type_pretrained_cell_embedding == "nemo":
-                return self.first_dataset.spatial_anndata.obsm["nemo_latent"].shape[1]
-            elif self.first_dataset.type_pretrained_cell_embedding == "novae":
-                return self.first_dataset.spatial_anndata.obsm["novae_latent"].shape[1]
-            elif self.first_dataset.type_pretrained_cell_embedding == "X_pca_harmony":
-                return self.first_dataset.spatial_anndata.obsm["X_pca_harmony"].shape[1]
-        return self.first_dataset.spatial_anndata.n_vars
+            return self.first_dataset._latent.shape[1]
+        return self.first_dataset._X.shape[1]
 
 
 class SpatialPatchDataset(torch.utils.data.Dataset):
@@ -325,10 +323,11 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
         hierarchical_graph: bool = True,
         tissue_filtering_threshold: float = 20000,
         pretrained_cell_embedding: bool = True,
-        type_pretrained_cell_embedding: str = 'nemo',
+        type_pretrained_cell_embedding: str = 'terra',
         is_train: bool = False,
         model_name: Optional[str] = None,
         hier_cache_dir: Optional[Path | str] = None,
+        latent_embedding_name: Optional[str] = None,
     ):
         self.image_file = str(image_file)
         self.indices_file = str(indices_file)
@@ -337,8 +336,36 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
 
         adata = scanpy.read_h5ad(spatial_file)   # full load, no backed="r"
 
-        assert 'nemo_latent' in adata.obsm, \
-            "'nemo_latent' embedding is required in the spatial anndata obsm."
+        # Explicit obsm keys take precedence; retain legacy config compatibility.
+        self.type_pretrained_cell_embedding = type_pretrained_cell_embedding
+        if latent_embedding_name is None:
+            latent_embedding_name = {
+                "terra": "terra_latent",
+                "nemo": "nemo_latent",
+                "novae": "novae_latent",
+                "X_pca_harmony": "X_pca_harmony",
+            }.get(type_pretrained_cell_embedding)
+            if (pretrained_cell_embedding and type_pretrained_cell_embedding == "terra"
+                    and "terra_latent" not in adata.obsm and "nemo_latent" in adata.obsm):
+                warnings.warn(
+                    f"terra_latent not found in {spatial_file}; using legacy nemo_latent. "
+                    "This does not convert NEMO embeddings to TERRA embeddings. "
+                    "Set latent_embedding_name explicitly to select the intended representation.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                latent_embedding_name = "nemo_latent"
+        self.latent_embedding_name = latent_embedding_name
+        self._latent = None
+        if pretrained_cell_embedding:
+            if not latent_embedding_name or latent_embedding_name not in adata.obsm:
+                raise ValueError(
+                    f"latent_embedding_name={latent_embedding_name!r} not found in "
+                    f"{spatial_file}; available obsm keys: {list(adata.obsm.keys())}"
+                )
+            self._latent = np.asarray(adata.obsm[latent_embedding_name], dtype=np.float32)
+            if self._latent.ndim != 2 or self._latent.shape[0] != adata.n_obs:
+                raise ValueError("Configured latent embedding must have shape (n_cells, dimension)")
         assert 'spatial_connectivities' in adata.obsp, \
             "'spatial_connectivities' is required in the spatial anndata obsp."
 
@@ -346,17 +373,6 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
         self._coords: np.ndarray = np.array(adata.obsm["spatial"], dtype=np.float32)
         ## spatil coordinates in um, convert to pixels
         self._coords = (self._coords / image_resolution_um_per_pixel).astype(np.float32)
-
-        # Cell embeddings
-        self._nemo: np.ndarray = np.array(adata.obsm["nemo_latent"], dtype=np.float32)
-        if "novae_latent" in adata.obsm:
-            self._novae: np.ndarray = np.array(adata.obsm["novae_latent"], dtype=np.float32)
-        else:
-            self._novae = None
-        if "X_pca_harmony" in adata.obsm:
-            self._harmony: np.ndarray = np.array(adata.obsm["X_pca_harmony"], dtype=np.float32)
-        else:
-            self._harmony = None
 
         # Gene expression matrix  (N, G)  – keep as CSR for slicing
         if sp.issparse(adata.X):
@@ -411,10 +427,11 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
         # cost (profile_dataloader.py showed ~52% of per-tile time).
         self._hier_cache: Optional[dict] = None
         if hier_cache_dir is not None:
-            cache_path = Path(hier_cache_dir) / f"{self.section_id}.npz"
-            if cache_path.exists():
-                with np.load(cache_path) as f:
-                    cache = {k: f[k] for k in f.files}
+            metadata = source_metadata(spatial_file, indices_file, fov_size,
+                                       num_resolutions, tissue_filtering_threshold,
+                                       image_resolution_um_per_pixel)
+            cache = load_hier_cache(hier_cache_dir, metadata)
+            if cache is not None:
                 # Sanity check: cache must cover the same valid tiles this
                 # dataset will iterate.
                 if self.valid_indices is not None and \
@@ -437,23 +454,12 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
                     )
                 self._hier_cache = cache
 
-        if self.pretrained_cell_embedding:
-            assert type_pretrained_cell_embedding in ['nemo', 'novae', 'X_pca_harmony'], \
-                "type_pretrained_cell_embedding must be 'nemo', 'novae', or 'X_pca_harmony'"
-            self.type_pretrained_cell_embedding = type_pretrained_cell_embedding
-
     def _get_cell_embeddings(self, mask: np.ndarray) -> np.ndarray:
-        """Return (n_cells, D) float32 array for cells selected by boolean mask."""
-        if self.type_pretrained_cell_embedding == "nemo":
-            return self._nemo[mask]
-        elif self.type_pretrained_cell_embedding == "novae":
-            assert self._novae is not None, "novae_latent not found in anndata."
-            return self._novae[mask]
-        elif self.type_pretrained_cell_embedding == "X_pca_harmony":
-            assert self._harmony is not None, "X_pca_harmony not found in anndata."
-            return self._harmony[mask]
-        else:
-            raise ValueError(f"Unknown embedding type: {self.type_pretrained_cell_embedding}")
+        """Select configured latent features (or raw expression) by cell identity."""
+        if self.pretrained_cell_embedding:
+            return self._latent[mask]
+        values = self._X[mask]
+        return values.toarray() if sp.issparse(values) else values
 
     def _subgraph_from_mask(self, mask: np.ndarray) -> dgl.DGLGraph:
         """Build a DGL graph from the global connectivity matrix sliced by mask."""
@@ -483,7 +489,7 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
 
         if self.pretrained_cell_embedding:
             # Optional quality filter for harmony embeddings
-            if self.type_pretrained_cell_embedding == "X_pca_harmony" and self._num_non_zero_genes is not None:
+            if self.latent_embedding_name == "X_pca_harmony" and self._num_non_zero_genes is not None:
                 if self._num_non_zero_genes[mask].mean() < 30:
                     return None
             cell_embeddings = torch.from_numpy(self._get_cell_embeddings(mask))
@@ -543,7 +549,7 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
                      torch.from_numpy(dst.astype(np.int64))),
                     num_nodes=n_total,
                 )
-                disjoint.ndata['feat'] = torch.from_numpy(self._nemo[cells])
+                disjoint.ndata['feat'] = torch.from_numpy(self._get_cell_embeddings(cells))
                 disjoint.ndata['x_pos'] = torch.from_numpy(x_pos)
                 disjoint.ndata['y_pos'] = torch.from_numpy(y_pos)
                 disjoint.ndata['cell_coordinates'] = torch.from_numpy(self._coords[cells])
@@ -561,8 +567,8 @@ class SpatialPatchDataset(torch.utils.data.Dataset):
 
                     sg = self._subgraph_from_mask(mask_grid)   # no h5ad slicing!
 
-                    # Node features – always use nemo for subgraphs (same as original)
-                    sg.ndata['feat'] = torch.from_numpy(self._nemo[mask_grid])
+                    # Use the same configured features at every graph scale.
+                    sg.ndata['feat'] = torch.from_numpy(self._get_cell_embeddings(mask_grid))
                     sg.ndata['x_pos'] = torch.full((sg.num_nodes(),), x_g // grid_size)
                     sg.ndata['y_pos'] = torch.full((sg.num_nodes(),), y_g // grid_size)
                     sg.ndata['cell_coordinates'] = torch.from_numpy(points[mask_grid])

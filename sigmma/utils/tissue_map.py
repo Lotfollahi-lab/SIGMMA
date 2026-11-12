@@ -22,17 +22,6 @@ from pathlib import Path
 
 import pandas as pd
 
-# $SIGMMA_SAMPLE_METADATA_CSV wins if set; otherwise the canonical path, then
-# the lustre_dabin symlink if the scratch mount is not visible from this host.
-_CANDIDATES = [
-    *([Path(os.environ["SIGMMA_SAMPLE_METADATA_CSV"])]
-      if "SIGMMA_SAMPLE_METADATA_CSV" in os.environ else []),
-    Path("/lustre/scratch126/cellgen/lotfollahi/dj16/data/sanger_in_house_xenium/"
-         "sample_metadata.csv"),
-    Path("/nfs/users/nfs_d/dj16/lustre_dabin/data/sanger_in_house_xenium/"
-         "sample_metadata.csv"),
-]
-
 # tissue_type -> display group. beacon + CTCL (two skin cohorts) collapse to one.
 GROUP_OF = {
     "beacon": "skin",
@@ -61,21 +50,25 @@ GROUP_LABEL = {
 PUBLIC_TT = {"IDC", "PAAD", "LUAD", "SKCM"}
 
 
-def metadata_path() -> Path:
-    for p in _CANDIDATES:
-        if p.exists():
-            return p
-    raise FileNotFoundError(
-        "sample_metadata.csv not found in any known location: "
-        + ", ".join(str(p) for p in _CANDIDATES)
-    )
+def metadata_path(csv_path: str | Path | None = None) -> Path:
+    value = csv_path if csv_path is not None else os.environ.get("SIGMMA_SAMPLE_METADATA_CSV")
+    if not value:
+        raise ValueError("Set SIGMMA_SAMPLE_METADATA_CSV or pass csv_path to select sample_metadata.csv.")
+    path = Path(value).expanduser()
+    if not path.is_file():
+        raise FileNotFoundError(f"Sample metadata CSV does not exist: {path}")
+    return path
 
 
-@lru_cache(maxsize=1)
-def load_tissue_map() -> dict[str, str]:
-    """sample_id -> tissue_type (authoritative). Cached per process."""
-    df = pd.read_csv(metadata_path())
+@lru_cache(maxsize=8)
+def _load_tissue_map(path: Path) -> dict[str, str]:
+    df = pd.read_csv(path)
     return dict(zip(df["sample_id"].astype(str), df["tissue_type"].astype(str)))
+
+
+def load_tissue_map(csv_path: str | Path | None = None) -> dict[str, str]:
+    """sample_id -> tissue_type; explicitly selected CSV, cached per path."""
+    return _load_tissue_map(metadata_path(csv_path).resolve())
 
 
 def tissue_of(section_id: str, default: str | None = None) -> str | None:

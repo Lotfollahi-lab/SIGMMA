@@ -1,0 +1,126 @@
+{
+  "profile": "cpu",
+  "prefix": "/tmp/sigmma-conda-cpu",
+  "source": "official dglteam Conda binary",
+  "steps": {
+    "torch_install": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "torch==2.3.1",
+        "torchvision==0.18.1",
+        "--index-url",
+        "https://download.pytorch.org/whl/cpu"
+      ],
+      "exit_code": 0
+    },
+    "wheel_build": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "wheel",
+        "--no-deps",
+        "--wheel-dir",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/dist",
+        "/nfs/team361/dj16/projects/SIGMMA"
+      ],
+      "exit_code": 0
+    },
+    "sigmma_install": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--index-url",
+        "https://pypi.org/simple",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/dist/sigmma-2.0.0-py3-none-any.whl"
+      ],
+      "exit_code": 0
+    },
+    "pip_check": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    "inventory": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "list",
+        "--format=json"
+      ],
+      "exit_code": 0
+    },
+    "runtime": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/check_install.py",
+        "--device",
+        "cpu"
+      ],
+      "exit_code": 0
+    },
+    "sigmma-train": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-train",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "sigmma-retrieval": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-retrieval",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "sigmma-extract-embeddings": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-extract-embeddings",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "sigmma-precompute-hier-cache": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-precompute-hier-cache",
+        "--help"
+      ],
+      "exit_code": 0
+    }
+  },
+  "status": "passed",
+  "runtime_environment": {
+    "LD_LIBRARY_PATH": "/tmp/sigmma-conda-cpu/lib:/usr/lib/oracle/19.6/client64/lib:/usr/lib/oracle/19.6/client64/lib:/software/isg/languages/node/node-v18.17.1//lib:/software/isg/languages/R/4.3.1-jupyter-v0/exec//lib:/software/isg/languages/Python/Python-3.11.10-jupyter/exec//lib:/software/lsf-cub22/10.1/linux3.10-glibc2.17-x86_64/lib",
+    "PYTHONNOUSERSITE": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "DGLBACKEND": "pytorch"
+  },
+  "wheel_sha256": "b49d4745c33b24e62f5e0730c9ec767f7432d19c245a28f0c6254e03f7f7e2b4"
+}

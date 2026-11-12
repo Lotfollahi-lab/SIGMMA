@@ -1,0 +1,11 @@
+/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'repr' attribute with value False was provided to the `Field()` function, which has no effect in the context it was used. 'repr' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2422: UnsupportedFieldAttributeWarning: The 'frozen' attribute with value True was provided to the `Field()` function, which has no effect in the context it was used. 'frozen' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+usage: sigmma-retrieval [-h] [-config_file CONFIG_FILE] [-out_dir OUT_DIR] [-zeroshot ZEROSHOT]
+
+options:
+  -h, --help            show this help message and exit
+  -config_file CONFIG_FILE
+  -out_dir OUT_DIR      Output directory path
+  -zeroshot ZEROSHOT    Run in zero-shot mode

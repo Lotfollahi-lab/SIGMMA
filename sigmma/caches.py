@@ -1,6 +1,6 @@
 """Cache path helpers + per-dir meta sanity-check for downstream probes.
 
-Three layers of cache, each rooted under ``CACHE_ROOT`` (lustre):
+Three layers of cache, each rooted under ``CACHE_ROOT``:
 
   * ``data/<task>/<tag>/``    — ckpt + backbone independent (targets, masks,
                                 crops, labels). Computed once forever.
@@ -26,8 +26,8 @@ from typing import Any, Iterable
 
 CACHE_ROOT = Path(os.environ.get(
     "SIGMMA_CACHE_ROOT",
-    "/lustre/scratch126/cellgen/lotfollahi/dj16/projects/sigmma_outputs/cache",
-))
+    str(Path.home() / ".cache" / "sigmma"),
+)).expanduser()
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 _META_NAME = "cache_meta.json"

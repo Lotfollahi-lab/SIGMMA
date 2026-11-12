@@ -1,0 +1,17 @@
+usage: sigmma-precompute-hier-cache [-h] --manifest MANIFEST --out_dir OUT_DIR [--fov_size FOV_SIZE] [--num_resolutions NUM_RESOLUTIONS]
+                                    [--tissue_threshold TISSUE_THRESHOLD] [--n_workers N_WORKERS]
+                                    [--image_resolution_um_per_pixel IMAGE_RESOLUTION_UM_PER_PIXEL] [--cache_format {legacy,source-v2}]
+
+Pre-compute hierarchical sub-FOV graphs for faster data loading.
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST
+  --out_dir OUT_DIR
+  --fov_size FOV_SIZE
+  --num_resolutions NUM_RESOLUTIONS
+  --tissue_threshold TISSUE_THRESHOLD
+  --n_workers N_WORKERS
+  --image_resolution_um_per_pixel IMAGE_RESOLUTION_UM_PER_PIXEL
+  --cache_format {legacy,source-v2}
+                        source-v2: source/options keys; requires a new empty directory

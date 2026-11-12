@@ -1,0 +1,169 @@
+⚠ Shard Index for dglteam/label/th23_cu121/linux-64 not available, falling back to flat repodata
+Using Flat Repodata for dglteam/label/th23_cu121/linux-64                                       ✔ Starting
+Using Flat Repodata for dglteam/label/th23_cu121/linux-64                                 ✔ Done (0.0 sec)
+⚠ Shard Index for dglteam/label/th23_cu121/noarch not available, falling back to flat repodata
+Using Flat Repodata for dglteam/label/th23_cu121/noarch                                         ✔ Starting
+Using Flat Repodata for dglteam/label/th23_cu121/noarch                                   ✔ Done (0.0 sec)
+Using Cached Shard Index for conda-forge/linux-64                                                   ✔ Done
+Using Cached Shard Index for conda-forge/noarch                                                     ✔ Done
+Fetching and Parsing Packages' Shards                                                           ⧖ Starting
+Fetching and Parsing Packages' Shards                                                     ✔ Done (1.9 sec)
+Parsing Packages' Records                                                                 ✔ Done (2.8 sec)
+
+Resolving Environment                                                                           ⧖ Starting
+Resolving Environment                                                                     ✔ Done (0.4 sec)
+
+Transaction
+
+  Prefix: /tmp/sigmma-conda-cuda
+
+  Updating specs:
+
+   - python=3.11
+   - pip
+   - dgl=2.4.0.th23.cu121
+   - numpy[version=">=1.26,<2"]
+
+
+  Package                          Version  Build                 Channel                        Size
+───────────────────────────────────────────────────────────────────────────────────────────────────────
+  Install:
+───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  + _openmp_mutex                      4.5  20_gnu                conda-forge                  Cached
+  + _python_abi3_support               1.0  hd8ed1ab_3            conda-forge                  Cached
+  + backports.zstd                   1.8.0  py311hdac8cdf_1       conda-forge                  Cached
+  + brotli-python                    1.2.1  py311heb3be6f_0       conda-forge                  Cached
+  + bzip2                            1.0.8  hda65f42_10           conda-forge                  Cached
+  + ca-certificates             2026.10.23  hbd8a1cb_0            conda-forge                  Cached
+  + certifi                     2026.10.23  pyhd8ed1ab_3          conda-forge                  Cached
+  + charset-normalizer               3.5.2  h1114479_0            conda-forge                  Cached
+  + cpython                        3.11.18  py311hd8ed1ab_0       conda-forge                  Cached
+  + dgl                   2.4.0.th23.cu121  py311_0               dglteam/label/th23_cu121      295MB
+  + h2                               4.4.1  pyhcf101f3_0          conda-forge                  Cached
+  + hpack                            4.2.0  pyhd8ed1ab_0          conda-forge                  Cached
+  + hyperframe                       6.1.0  pyhd8ed1ab_0          conda-forge                  Cached
+  + idna                              3.20  pyh5ded981_0          conda-forge                  Cached
+  + ld_impl_linux-64                2.46.1  default_hbd61a6d_103  conda-forge                  Cached
+  + libblas                         3.11.0  12_h4a7cf45_openblas  conda-forge                  Cached
+  + libcblas                        3.11.0  12_h0358290_openblas  conda-forge                  Cached
+  + libexpat                         2.9.0  hd2095e1_0            conda-forge                  Cached
+  + libffi                           3.7.0  h81df57d_1            conda-forge                  Cached
+  + libgcc                          16.2.0  ha9f2e26_7            conda-forge                  Cached
+  + libgcc-ng                       16.2.0  h69a702a_7            conda-forge                  Cached
+  + libgfortran                     16.2.0  h69a702a_7            conda-forge                  Cached
+  + libgfortran5                    16.2.0  h6b99dfc_7            conda-forge                  Cached
+  + libgomp                         16.2.0  he0feb66_7            conda-forge                  Cached
+  + liblapack                       3.11.0  12_h47877c9_openblas  conda-forge                  Cached
+  + liblzma                          5.8.3  hb03c661_1            conda-forge                  Cached
+  + libnsl                           2.0.1  hb9d3cd8_1            conda-forge                  Cached
+  + libopenblas                     0.3.34  pthreads_hf13c14d_2   conda-forge                  Cached
+  + libpython                      3.11.18  ha57cdbe_0_cpython    conda-forge                  Cached
+  + libsqlite                       3.54.1  h0737f62_101          conda-forge                  Cached
+  + libstdcxx                       16.2.0  h934c35e_7            conda-forge                  Cached
+  + libstdcxx-ng                    16.2.0  hdf11a46_7            conda-forge                  Cached
+  + libuuid                         2.42.4  hcfc3c73_1            conda-forge                  Cached
+  + libxcrypt                       4.4.38  h280c20c_0            conda-forge                  Cached
+  + libzlib                          1.3.2  h25fd6f3_3            conda-forge                  Cached
+  + ncurses                            6.6  hdb14827_1            conda-forge                  Cached
+  + networkx                         3.6.1  pyhcf101f3_0          conda-forge                  Cached
+  + numpy                           1.26.4  py311h64a7726_0       conda-forge                  Cached
+  + openssl                          3.6.5  h781a0a9_0            conda-forge                  Cached
+  + packaging                         26.3  pyhc364b38_0          conda-forge                  Cached
+  + pip                             26.2.2  pyh8b19718_2          conda-forge                  Cached
+  + psutil                           7.2.2  py311h194be0f_3       conda-forge                  Cached
+  + pysocks                          1.7.1  pyha55dd90_7          conda-forge                  Cached
+  + python                         3.11.18  h5f976f7_0_cpython    conda-forge                  Cached
+  + python-gil                     3.11.18  hd8ed1ab_0            conda-forge                  Cached
+  + python_abi                        3.11  9_cp311               conda-forge                  Cached
+  + readline                           8.3  hd6e31c0_1            conda-forge                  Cached
+  + requests                        2.34.2  pyhcf101f3_0          conda-forge                  Cached
+  + scipy                           1.17.1  py311hbe70eeb_1       conda-forge                  Cached
+  + setuptools                      84.2.1  pyhe730653_0          conda-forge                  Cached
+  + tk                              8.6.13  noxft_h1df4ec4_4      conda-forge                  Cached
+  + tqdm                            4.70.1  pyhfa0c392_0          conda-forge                  Cached
+  + tzdata                           2026e  h5d301ff_0            conda-forge                  Cached
+  + urllib3                          2.8.0  pyhd8ed1ab_0          conda-forge                  Cached
+  + wheel                           0.48.0  pyhd8ed1ab_0          conda-forge                  Cached
+  + zstd                             1.5.7  hb78ec9c_7            conda-forge                  Cached
+
+  Summary:
+
+  Install: 56 packages
+
+  Total download: 295MB
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+warning  libmamba Security Warning: This transaction includes executing package scripts (pre/post-link/unlink) if present. These scripts can contain arbitrary code. Please ensure you trust the package sources.
+
+Transaction starting
+Linking ca-certificates-2026.10.23-hbd8a1cb_0
+Linking python_abi-3.11-9_cp311
+Linking tzdata-2026e-h5d301ff_0
+Linking libzlib-1.3.2-h25fd6f3_3
+Linking libgomp-16.2.0-he0feb66_7
+Linking zstd-1.5.7-hb78ec9c_7
+Linking _openmp_mutex-4.5-20_gnu
+Linking ld_impl_linux-64-2.46.1-default_hbd61a6d_103
+Linking libgcc-16.2.0-ha9f2e26_7
+Linking libgfortran5-16.2.0-h6b99dfc_7
+Linking bzip2-1.0.8-hda65f42_10
+Linking libnsl-2.0.1-hb9d3cd8_1
+Linking libexpat-2.9.0-hd2095e1_0
+Linking libuuid-2.42.4-hcfc3c73_1
+Linking openssl-3.6.5-h781a0a9_0
+Linking libffi-3.7.0-h81df57d_1
+Linking libsqlite-3.54.1-h0737f62_101
+Linking liblzma-5.8.3-hb03c661_1
+Linking ncurses-6.6-hdb14827_1
+Linking tk-8.6.13-noxft_h1df4ec4_4
+Linking libgcc-ng-16.2.0-h69a702a_7
+Linking libstdcxx-16.2.0-h934c35e_7
+Linking libpython-3.11.18-ha57cdbe_0_cpython
+Linking libxcrypt-4.4.38-h280c20c_0
+Linking libgfortran-16.2.0-h69a702a_7
+Linking readline-8.3-hd6e31c0_1
+Linking libstdcxx-ng-16.2.0-hdf11a46_7
+Linking libopenblas-0.3.34-pthreads_hf13c14d_2
+Linking python-3.11.18-h5f976f7_0_cpython
+Linking libblas-3.11.0-12_h4a7cf45_openblas
+Linking brotli-python-1.2.1-py311heb3be6f_0
+Linking backports.zstd-1.8.0-py311hdac8cdf_1
+Linking psutil-7.2.2-py311h194be0f_3
+Linking libcblas-3.11.0-12_h0358290_openblas
+Linking liblapack-3.11.0-12_h47877c9_openblas
+Linking numpy-1.26.4-py311h64a7726_0
+Linking scipy-1.17.1-py311hbe70eeb_1
+Linking pysocks-1.7.1-pyha55dd90_7
+Linking hpack-4.2.0-pyhd8ed1ab_0
+Linking hyperframe-6.1.0-pyhd8ed1ab_0
+Linking cpython-3.11.18-py311hd8ed1ab_0
+Linking idna-3.20-pyh5ded981_0
+Linking certifi-2026.10.23-pyhd8ed1ab_3
+Linking packaging-26.3-pyhc364b38_0
+Linking networkx-3.6.1-pyhcf101f3_0
+Linking tqdm-4.70.1-pyhfa0c392_0
+Linking setuptools-84.2.1-pyhe730653_0
+Linking h2-4.4.1-pyhcf101f3_0
+Linking python-gil-3.11.18-hd8ed1ab_0
+Linking wheel-0.48.0-pyhd8ed1ab_0
+Linking urllib3-2.8.0-pyhd8ed1ab_0
+Linking _python_abi3_support-1.0-hd8ed1ab_3
+Linking pip-26.2.2-pyh8b19718_2
+Linking charset-normalizer-3.5.2-h1114479_0
+Linking requests-2.34.2-pyhcf101f3_0
+Linking dgl-2.4.0.th23.cu121-py311_0
+
+Transaction finished
+
+
+To activate this environment, use:
+
+    micromamba activate /tmp/sigmma-conda-cuda
+
+Or to execute a single command in this environment, use:
+
+    micromamba run -p /tmp/sigmma-conda-cuda mycommand
+

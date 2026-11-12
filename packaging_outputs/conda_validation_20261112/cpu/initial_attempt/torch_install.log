@@ -1,0 +1,43 @@
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.3.1
+  Downloading torch-2.3.1%2Bcpu-cp311-cp311-linux_x86_64.whl (190.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 190.4/190.4 MB 90.4 MB/s  0:00:02
+Collecting torchvision==0.18.1
+  Downloading torchvision-0.18.1%2Bcpu-cp311-cp311-linux_x86_64.whl (1.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 32.3 MB/s  0:00:00
+Collecting filelock (from torch==2.3.1)
+  Downloading filelock-4.2.4-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.8.0 (from torch==2.3.1)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy (from torch==2.3.1)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Requirement already satisfied: networkx in /tmp/sigmma-conda-cpu/lib/python3.11/site-packages (from torch==2.3.1) (3.6.1)
+Collecting jinja2 (from torch==2.3.1)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec (from torch==2.3.1)
+  Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: numpy in /tmp/sigmma-conda-cpu/lib/python3.11/site-packages (from torchvision==0.18.1) (1.26.4)
+Collecting pillow!=8.3.*,>=5.3.0 (from torchvision==0.18.1)
+  Downloading pillow-13.0.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.3.1)
+  Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy->torch==2.3.1)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Downloading pillow-13.0.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 86.2 MB/s  0:00:00
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading filelock-4.2.4-py3-none-any.whl (162 kB)
+Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 79.2 MB/s  0:00:00
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 13.6 MB/s  0:00:00
+Installing collected packages: mpmath, typing-extensions, sympy, pillow, MarkupSafe, fsspec, filelock, jinja2, torch, torchvision
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+dgl 2.4.0 requires pandas, which is not installed.
+dgl 2.4.0 requires pydantic>=2.0, which is not installed.
+dgl 2.4.0 requires pyyaml, which is not installed.
+Successfully installed MarkupSafe-3.0.3 filelock-4.2.4 fsspec-2026.9.0 jinja2-3.1.6 mpmath-1.3.0 pillow-13.0.0 sympy-1.14.0 torch-2.3.1+cpu torchvision-0.18.1+cpu typing-extensions-4.16.0
