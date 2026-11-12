@@ -1,0 +1,7 @@
+Processing /nfs/team361/dj16/projects/SIGMMA/dist/portable/sigmma-2.0.0-py3-none-any.whl
+Installing collected packages: sigmma
+  Attempting uninstall: sigmma
+    Found existing installation: sigmma 2.0.0
+    Uninstalling sigmma-2.0.0:
+      Successfully uninstalled sigmma-2.0.0
+Successfully installed sigmma-2.0.0

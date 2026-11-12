@@ -1,0 +1,181 @@
+{
+  "status": "passed",
+  "steps": {
+    "build_tools": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "install",
+        "build"
+      ],
+      "exit_code": 0
+    },
+    "build": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "build",
+        "--outdir",
+        "/nfs/team361/dj16/projects/SIGMMA/dist/portable",
+        "/nfs/team361/dj16/projects/SIGMMA"
+      ],
+      "exit_code": 0
+    },
+    "cpu_install": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "install",
+        "--no-deps",
+        "--force-reinstall",
+        "/nfs/team361/dj16/projects/SIGMMA/dist/portable/sigmma-2.0.0-py3-none-any.whl"
+      ],
+      "exit_code": 0
+    },
+    "cpu_dependencies": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    "cpu_path_tests": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/tests/test_portable_paths.py"
+      ],
+      "exit_code": 0
+    },
+    "cpu_runtime": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/scripts/check_install.py",
+        "--device",
+        "cpu"
+      ],
+      "exit_code": 0
+    },
+    "cpu_sigmma-train": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-train",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cpu_sigmma-retrieval": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-retrieval",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cpu_sigmma-extract-embeddings": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-extract-embeddings",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cpu_sigmma-precompute-hier-cache": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/sigmma-precompute-hier-cache",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cuda_install": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "install",
+        "--no-deps",
+        "--force-reinstall",
+        "/nfs/team361/dj16/projects/SIGMMA/dist/portable/sigmma-2.0.0-py3-none-any.whl"
+      ],
+      "exit_code": 0
+    },
+    "cuda_dependencies": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    "cuda_path_tests": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/tests/test_portable_paths.py"
+      ],
+      "exit_code": 0
+    },
+    "cuda_runtime": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/scripts/check_install.py",
+        "--device",
+        "cuda"
+      ],
+      "exit_code": 0
+    },
+    "cuda_sigmma-train": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/sigmma-train",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cuda_sigmma-retrieval": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/sigmma-retrieval",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cuda_sigmma-extract-embeddings": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/sigmma-extract-embeddings",
+        "--help"
+      ],
+      "exit_code": 0
+    },
+    "cuda_sigmma-precompute-hier-cache": {
+      "command": [
+        "/tmp/sigmma-conda-cuda/bin/sigmma-precompute-hier-cache",
+        "--help"
+      ],
+      "exit_code": 0
+    }
+  },
+  "artifacts": {
+    "sigmma-2.0.0-py3-none-any.whl": {
+      "sha256": "ef251b9cd1d285db6a9919a0a68bc3585ecb43cb57dd6b8171bcd290ef270fc8",
+      "files_scanned": 48,
+      "server_path_hits": []
+    },
+    "sigmma-2.0.0.tar.gz": {
+      "sha256": "e08e8cdf3b01cdde8c908590c873fbed65f48fe3337dae1c37590d184d888292",
+      "files_scanned": 48,
+      "server_path_hits": []
+    }
+  }
+}

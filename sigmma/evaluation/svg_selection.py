@@ -38,13 +38,10 @@ from scipy import sparse
 # 3-letter section-name code. Name-code parsing was lossy: it silently dropped
 # adrenocortical_carcinoma (no code in the name), split pediatric_ovary across
 # OVR/GON/RPT sub-codes, and conflated beacon vs CTCL under "SKI".
-SECTION_PANEL_CSV = os.environ.get(
-    "SIGMMA_SECTION_PANEL_CSV",
-    "/lustre/scratch126/cellgen/lotfollahi/dj16/data/sanger_in_house_xenium/"
-    "gene_panel_info/section_to_gene_panel.csv",
-)
+SECTION_PANEL_CSV = os.environ.get("SIGMMA_SECTION_PANEL_CSV")
 
 _SECTION_TISSUE_CACHE: Optional[dict] = None
+_SECTION_TISSUE_CACHE_PATH: Optional[str] = None
 
 # Legacy section-name code → authoritative tissue label. Used ONLY as a
 # fallback when the curated CSV is unavailable. SKI cannot be disambiguated
@@ -65,18 +62,21 @@ _LEGACY_CODE_TO_TISSUE = {
 
 def _load_section_tissue_map(csv_path: Optional[str] = None) -> dict:
     """Lazy-load + cache the authoritative {sample_name: tissue} map from
-    section_to_gene_panel.csv. Returns {} (triggering the legacy name-code
-    fallback in ``tissue_of``) when the CSV file is missing."""
-    global _SECTION_TISSUE_CACHE
-    if csv_path is None and _SECTION_TISSUE_CACHE is not None:
+    section_to_gene_panel.csv. A missing configuration or file raises an
+    actionable error instead of silently changing tissue labels."""
+    global _SECTION_TISSUE_CACHE, _SECTION_TISSUE_CACHE_PATH
+    value = csv_path if csv_path is not None else os.environ.get("SIGMMA_SECTION_PANEL_CSV", SECTION_PANEL_CSV)
+    if not value:
+        raise ValueError("Set SIGMMA_SECTION_PANEL_CSV or pass csv_path to select section_to_gene_panel.csv.")
+    path = str(Path(value).expanduser().resolve())
+    if not Path(path).is_file():
+        raise FileNotFoundError(f"Section panel CSV does not exist: {path}")
+    if path == _SECTION_TISSUE_CACHE_PATH and _SECTION_TISSUE_CACHE is not None:
         return _SECTION_TISSUE_CACHE
-    path = csv_path or SECTION_PANEL_CSV
-    mapping: dict = {}
-    if os.path.exists(path):
-        df = pd.read_csv(path, usecols=["sample_name", "tissue"])
-        mapping = dict(zip(df["sample_name"].astype(str), df["tissue"].astype(str)))
-    if csv_path is None:
-        _SECTION_TISSUE_CACHE = mapping
+    df = pd.read_csv(path, usecols=["sample_name", "tissue"])
+    mapping = dict(zip(df["sample_name"].astype(str), df["tissue"].astype(str)))
+    _SECTION_TISSUE_CACHE = mapping
+    _SECTION_TISSUE_CACHE_PATH = path
     return mapping
 
 
@@ -101,8 +101,8 @@ def tissue_of(sample_name: str, csv_path: Optional[str] = None) -> Optional[str]
     ``CTCL``, ``glioblastoma``, ``lung``, ``liver``, ``pancreas``,
     ``whole_embryo``.
 
-    Falls back to legacy section-name code parsing only when the CSV is
-    unavailable; returns None if neither resolves.
+    Requires a configured CSV. An empty CSV retains the legacy name-code
+    fallback; an unknown section in a populated CSV returns None.
     """
     mapping = _load_section_tissue_map(csv_path)
     if sample_name in mapping:

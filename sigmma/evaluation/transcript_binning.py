@@ -4,13 +4,9 @@ Bin per-slide `transcripts.parquet` (Xenium output) into a `(G, K, K)` count
 tensor for an arbitrary FOV bbox in H&E pixel coordinates. Used by the 2D
 GEX probing pipeline as supervision; encoder code path is untouched.
 
-Path layout (in-house Sanger cohort):
-    H&E zarr: /lustre/.../sanger_beacon/<run_id>/<sample>/hematoxylin_eosin.zarr
-    Xenium:   /nfs/team361/data/data_platform/data_staging/sanger_beacon/
-              <run_id>/<sample>/output-XETG*/transcripts.parquet
-
-~30% of manifest slides do not have transcripts on /nfs/team361 — caller must
-handle the `None` return.
+Supply H&E paths in the manifest. Transcripts are resolved as
+``<sample_directory>/transcripts.parquet`` beside the H&E zarr.
+Some slides do not have transcripts; callers must handle the ``None`` return.
 
 Coordinates: H&E zarr is in pixels at ``um_per_px`` (= 0.5 for the in-house
 H&E scans). Xenium ``x_location``/``y_location`` are in µm. The FOV bbox is
@@ -28,21 +24,15 @@ from typing import Optional, Sequence
 import numpy as np
 import pyarrow.parquet as pq
 
-LUSTRE_DATA_ROOT = os.environ.get(
-    "SIGMMA_IN_HOUSE_DATA_ROOT",
-    "/lustre/scratch126/cellgen/lotfollahi/dj16/data/sanger_in_house_xenium",
-)
-PUBLIC_DATA_ROOT = os.environ.get(
-    "SIGMMA_PUBLIC_DATA_ROOT",
-    "/lustre/scratch126/cellgen/lotfollahi/dj16/data/public_xenium",
-)
-NFS_DATA_ROOT = os.environ.get(
-    "SIGMMA_NFS_DATA_ROOT", "/nfs/team361/data/data_platform/data_staging"
-)
+# Legacy exported constants are optional; transcript resolution uses the
+# caller's manifest path and does not require any global data root.
+LUSTRE_DATA_ROOT = os.environ.get("SIGMMA_IN_HOUSE_DATA_ROOT") or None
+PUBLIC_DATA_ROOT = os.environ.get("SIGMMA_PUBLIC_DATA_ROOT") or None
+NFS_DATA_ROOT = os.environ.get("SIGMMA_NFS_DATA_ROOT") or None
 
 # Back-compat aliases (other modules may import these by name).
-LUSTRE_HE_ROOT = LUSTRE_DATA_ROOT + "/sanger_beacon"
-NFS_XENIUM_ROOT = NFS_DATA_ROOT + "/sanger_beacon"
+LUSTRE_HE_ROOT = str(Path(LUSTRE_DATA_ROOT).expanduser() / "sanger_beacon") if LUSTRE_DATA_ROOT else None
+NFS_XENIUM_ROOT = str(Path(NFS_DATA_ROOT).expanduser() / "sanger_beacon") if NFS_DATA_ROOT else None
 
 
 def manifest_path_to_transcripts_parquet(hematoxylin_zarr_path: str) -> Optional[str]:

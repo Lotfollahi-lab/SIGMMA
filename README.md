@@ -197,9 +197,13 @@ The SIGMMA command-line entrypoints are `sigmma-train`, `sigmma-retrieval`,
 
 ### Data paths
 
-Cluster-specific data defaults can be overridden with `SIGMMA_CACHE_ROOT`,
-`SIGMMA_IN_HOUSE_DATA_ROOT`, `SIGMMA_PUBLIC_DATA_ROOT`, `SIGMMA_NFS_DATA_ROOT`,
-`SIGMMA_SAMPLE_METADATA_CSV`, and `SIGMMA_SECTION_PANEL_CSV`.
+Specify data paths in your manifest and model paths in your configuration.
+There are no server-specific data defaults. Cache helpers use `~/.cache/sigmma`;
+set `SIGMMA_CACHE_ROOT` before import to choose another location, or pass `root=`.
+For tissue mapping, set `SIGMMA_SAMPLE_METADATA_CSV`; for SVG tissue labels, set
+`SIGMMA_SECTION_PANEL_CSV` (or pass `csv_path=` to the corresponding loader).
+These CSVs are required only when their mapping functions are called.
+See [Data paths](docs/installation.md#data-paths) for examples and migration.
 
 ## Data Preparation
 You can download dataset in the following [link](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD)

@@ -155,9 +155,31 @@ For the SIGMMA checkpoint used in the tutorials, see {doc}`tutorials/index`.
 
 ## Data paths
 
-Cluster-specific default paths can be overridden with environment variables:
-`SIGMMA_CACHE_ROOT`, `SIGMMA_IN_HOUSE_DATA_ROOT`, `SIGMMA_PUBLIC_DATA_ROOT`,
-`SIGMMA_NFS_DATA_ROOT`, `SIGMMA_SAMPLE_METADATA_CSV`, `SIGMMA_SECTION_PANEL_CSV`.
+Specify data paths in your manifest and checkpoint paths in your model
+configuration. No server-specific data locations are built into the package.
+
+```bash
+# Replace these examples with your own locations; set before starting Python.
+export SIGMMA_CACHE_ROOT="$HOME/sigmma-cache"
+export SIGMMA_SAMPLE_METADATA_CSV="$HOME/my-data/sample_metadata.csv"
+export SIGMMA_SECTION_PANEL_CSV="$HOME/my-data/section_to_gene_panel.csv"
+```
+
+- Cache helpers default to `~/.cache/sigmma`; their `root=` argument overrides
+  the default. `SIGMMA_CACHE_ROOT` is read at import time.
+- `load_tissue_map(csv_path=...)` accepts a CSV with `sample_id,tissue_type`.
+  Without an explicit argument it reads `SIGMMA_SAMPLE_METADATA_CSV`.
+- `sigmma.evaluation.svg_selection.tissue_of(..., csv_path=...)` accepts a CSV
+  with `sample_name,tissue`, or reads `SIGMMA_SECTION_PANEL_CSV`.
+- Missing mapping settings/files raise an actionable error when those mapping
+  functions are called; they do not prevent importing or training SIGMMA.
+- Transcript binning resolves `transcripts.parquet` beside the H&E zarr path
+  supplied in the manifest. No global data root is required.
+
+Migration: set the variables above to your existing local paths to reuse your
+data and caches. The legacy transcript-root constants remain available through
+`SIGMMA_IN_HOUSE_DATA_ROOT`, `SIGMMA_PUBLIC_DATA_ROOT`, and `SIGMMA_NFS_DATA_ROOT`,
+but are `None` when unset and are not used by transcript resolution.
 
 ## Development environment
 
