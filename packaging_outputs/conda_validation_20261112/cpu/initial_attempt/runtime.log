@@ -1,0 +1,1 @@
+Installation check failed: /lib/x86_64-linux-gnu/libstdc++.so.6: version `CXXABI_1.3.15' not found (required by /tmp/sigmma-conda-cpu/lib/python3.11/site-packages/scipy/spatial/_distance_pybind.cpython-311-x86_64-linux-gnu.so)

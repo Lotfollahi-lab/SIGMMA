@@ -1,0 +1,91 @@
+{
+  "profile": "cpu",
+  "prefix": "/tmp/sigmma-conda-cpu",
+  "source": "official dglteam Conda binary",
+  "steps": {
+    "torch_install": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "torch==2.3.1",
+        "torchvision==0.18.1",
+        "--index-url",
+        "https://download.pytorch.org/whl/cpu"
+      ],
+      "exit_code": 0
+    },
+    "wheel_build": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "wheel",
+        "--no-deps",
+        "--wheel-dir",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/dist",
+        "/nfs/team361/dj16/projects/SIGMMA"
+      ],
+      "exit_code": 0
+    },
+    "sigmma_install": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "install",
+        "--index-url",
+        "https://pypi.org/simple",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/dist/sigmma-2.0.0-py3-none-any.whl"
+      ],
+      "exit_code": 0
+    },
+    "pip_check": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    "inventory": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "-m",
+        "pip",
+        "--isolated",
+        "--disable-pip-version-check",
+        "list",
+        "--format=json"
+      ],
+      "exit_code": 0
+    },
+    "runtime": {
+      "command": [
+        "/tmp/sigmma-conda-cpu/bin/python",
+        "-I",
+        "/nfs/team361/dj16/projects/SIGMMA/packaging_outputs/conda_validation_20261112/cpu/check_install.py",
+        "--device",
+        "cpu"
+      ],
+      "exit_code": 1
+    }
+  },
+  "status": "failed_at_runtime",
+  "wheel_sha256": "b49d4745c33b24e62f5e0730c9ec767f7432d19c245a28f0c6254e03f7f7e2b4"
+}

@@ -1,0 +1,45 @@
+Traceback (most recent call last):
+  File "/tmp/sigmma-conda-cuda/bin/sigmma-precompute-hier-cache", line 3, in <module>
+    from sigmma.cli.precompute_hier_cache import main
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sigmma/cli/precompute_hier_cache.py", line 54, in <module>
+    import scanpy
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/__init__.py", line 38, in <module>
+    from . import datasets, experimental, external, get, logging, metrics, queries
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/experimental/__init__.py", line 5, in <module>
+    from . import pp
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/experimental/pp/__init__.py", line 5, in <module>
+    from scanpy.experimental.pp._highly_variable_genes import highly_variable_genes
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/experimental/pp/_highly_variable_genes.py", line 25, in <module>
+    from ...get import _get_obs_rep
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/get/__init__.py", line 5, in <module>
+    from ._aggregated import aggregate
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scanpy/get/_aggregated.py", line 10, in <module>
+    from sklearn.utils.sparsefuncs import csc_median_axis_0
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/__init__.py", line 70, in <module>
+    from sklearn.base import clone  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/base.py", line 20, in <module>
+    from sklearn.utils._metadata_requests import _MetadataRequester, _routing_enabled
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/__init__.py", line 9, in <module>
+    from sklearn.utils._chunking import gen_batches, gen_even_slices
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/_chunking.py", line 11, in <module>
+    from sklearn.utils._param_validation import Interval, validate_params
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/_param_validation.py", line 17, in <module>
+    from sklearn.utils.validation import _is_arraylike_not_scalar
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/validation.py", line 24, in <module>
+    from sklearn.utils._array_api import (
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/_array_api.py", line 23, in <module>
+    from sklearn.utils.fixes import parse_version
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/sklearn/utils/fixes.py", line 16, in <module>
+    import scipy.stats
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/stats/__init__.py", line 628, in <module>
+    from ._stats_py import *
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/stats/_stats_py.py", line 40, in <module>
+    from scipy.spatial import distance_matrix
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/spatial/__init__.py", line 117, in <module>
+    from ._geometric_slerp import geometric_slerp
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/spatial/_geometric_slerp.py", line 7, in <module>
+    from scipy.spatial.distance import euclidean
+  File "/tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/spatial/distance.py", line 117, in <module>
+    from . import _hausdorff, _distance_pybind, _distance_wrap
+ImportError: /lib/x86_64-linux-gnu/libstdc++.so.6: version `CXXABI_1.3.15' not found (required by /tmp/sigmma-conda-cuda/lib/python3.11/site-packages/scipy/spatial/_distance_pybind.cpython-311-x86_64-linux-gnu.so)

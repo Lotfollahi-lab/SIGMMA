@@ -1,0 +1,13 @@
+Processing /nfs/team361/dj16/projects/SIGMMA
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: sigmma
+  Building wheel for sigmma (pyproject.toml): started
+  Building wheel for sigmma (pyproject.toml): finished with status 'done'
+  Created wheel for sigmma: filename=sigmma-2.0.0-py3-none-any.whl size=136018 sha256=b49d4745c33b24e62f5e0730c9ec767f7432d19c245a28f0c6254e03f7f7e2b4
+  Stored in directory: /tmp/pip-ephem-wheel-cache-0p9h71yb/wheels/c7/41/24/31e24b8faeaffef3f2a4da520722d80a273eb3b4ee040c6280
+Successfully built sigmma

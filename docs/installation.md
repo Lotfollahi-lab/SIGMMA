@@ -7,11 +7,59 @@ before installing the SIGMMA wheel. DGL is a required runtime dependency.
 The wheel declares `dgl==2.4.0`, without a development-wheel URL or a local path.
 This requirement accepts both `2.4.0` and `2.4.0+cu121` builds.
 
-**Validation status:** this is a release candidate, not an installation-tested
-support matrix. Access to `data.dgl.ai` failed with a TLS EOF in the development
-environment. Complete installation and SIGMMA graph execution with stable DGL
-2.4.0 remain unverified. Historical research used DGL `2.5a241214+cu121`;
-those results do not validate the stable release candidate.
+**Validation status (2026-11-12):** the official DGL team Conda route below
+passed fresh installation of the locally built SIGMMA wheel, `pip check`, core
+imports, graph forward/backward checks on CPU and A100 CUDA 12.1, and all four
+CLI `--help` checks. Direct installation of DGL pip wheels remains unverified
+because `data.dgl.ai` terminates TLS before sending a certificate. These checks
+do not validate the published SIGMMA PyPI artifact, model weights, training
+equivalence, or biological evaluation results.
+
+## Validated Conda route
+
+Use micromamba (tested) or a compatible Conda installation. From the SIGMMA
+source checkout, choose one profile:
+
+```bash
+# CPU
+micromamba create -y -n sigmma-cpu \
+  -c https://conda.anaconda.org/dglteam/label/th23_cpu -c conda-forge \
+  python=3.11 pip dgl=2.4.0.th23.cpu 'numpy>=1.26,<2'
+micromamba activate sigmma-cpu
+python -m pip install 'torch==2.3.1' 'torchvision==0.18.1' --index-url https://download.pytorch.org/whl/cpu
+
+# OR CUDA 12.1
+micromamba create -y -n sigmma-cuda \
+  -c https://conda.anaconda.org/dglteam/label/th23_cu121 -c conda-forge \
+  python=3.11 pip dgl=2.4.0.th23.cu121 'numpy>=1.26,<2'
+micromamba activate sigmma-cuda
+python -m pip install 'torch==2.3.1' 'torchvision==0.18.1' --index-url https://download.pytorch.org/whl/cu121
+```
+
+Then, in the chosen environment:
+
+```bash
+# Prefer the environment's C++ runtime over an older system libstdc++.
+export LD_LIBRARY_PATH="$CONDA_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export DGLBACKEND=pytorch
+python -m pip wheel --no-deps --wheel-dir ./dist/validated .
+python -m pip install ./dist/validated/sigmma-2.0.0-py3-none-any.whl
+python -m pip check
+python scripts/check_install.py --device cpu  # use --device cuda for CUDA
+sigmma-train --help
+sigmma-retrieval --help
+sigmma-extract-embeddings --help
+sigmma-precompute-hier-cache --help
+```
+
+The explicit library path was necessary on the validation host: otherwise
+SciPy loaded an older system `libstdc++.so.6` lacking `CXXABI_1.3.15`.
+No model code or installed package metadata was modified. DGL's Python
+distribution versions are `2.4.0` and `2.4.0+cu121`, satisfying SIGMMA's existing
+dependency. Full inventories, Conda provenance, wheel hashes, initial failures,
+and passing results are recorded in `packaging_outputs/conda_validation_20261112/`.
+
+## Direct pip route (DGL host currently unavailable)
 
 Start in a new environment:
 

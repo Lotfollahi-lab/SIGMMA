@@ -12,12 +12,16 @@ The package declares `dgl==2.4.0`, which accepts both `2.4.0` and `2.4.0+cu121`
 builds. DGL 2.4.0 is not available on PyPI, so `pip install sigmma` alone
 cannot resolve it: install DGL from the official DGL index first, as below.
 
-**Validation status:** official DGL wheel installation remains unverified here
-because access to `data.dgl.ai` fails with a TLS EOF. Official-source DGL 2.4.0
-builds have been exercised on CPU and H100, but those checks do not validate the
-published wheels or a clean dependency installation. Previous GPU gradient
-comparisons used a diagnostic objective containing KL, which is no longer part
-of SIGMMA; they do not establish training-gradient equivalence.
+**Validation status (2026-11-12):** fresh environments using official DGL team
+Conda binaries passed SIGMMA wheel installation, `pip check`, core imports,
+graph forward/backward checks on CPU and A100 CUDA 12.1, and all four CLI
+`--help` checks. See [the tested Conda route](docs/installation.md#validated-conda-route)
+and `packaging_outputs/conda_validation_20261112/` for commands and evidence.
+This validates the locally built SIGMMA wheel, not the PyPI artifact or model
+accuracy. Direct DGL pip wheel installation remains unverified: `data.dgl.ai`
+still terminates TLS before sending a certificate. Previous GPU gradient
+comparisons used a diagnostic objective containing KL; they do not establish
+training-gradient equivalence.
 
 Start in a new environment:
 
