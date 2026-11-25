@@ -1,3 +1,4 @@
+<!-- pypi-start: the PyPI description begins below this line (logo omitted) -->
 # SIGMMA, σ
 Spatial transcriptome–histology Image representation learning via hierarchical Graph-based Multi-scale Multi-modal Alignment
 
@@ -180,7 +181,7 @@ model terms; SIGMMA does not redistribute the weights.
 ## Comparison baselines
 
 Comparison models are maintained in the separately installed
-[`benchmarks/`](https://github.com/Lotfollahi-lab/SIGMMA2.0/blob/main/benchmarks/README.md) project and are excluded from the SIGMMA
+[`benchmarks/`](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/benchmarks/README.md) project and are excluded from the SIGMMA
 wheel. Install `./benchmarks[retrieval]` to run retrieval baselines; the original
 baseline script paths remain forwarding entrypoints. SIGMMA itself does not
 require the benchmark package.
