@@ -500,8 +500,9 @@ def process_slide_features(
     (its ``.image_encoder`` is the LoRA-adapted UNI). ``sigmma_model`` may
     be passed explicitly or default to ``backbone_model``; the routine
     derives the per-scale projection head:
-      * dense-attnpool: ``sigmma_model.scale_mlps[scale_idx]``
-      * legacy per-scale-LoRA: ``image_projection_heads[scale_idx]``
+
+    * dense-attnpool: ``sigmma_model.scale_mlps[scale_idx]``
+    * legacy per-scale-LoRA: ``image_projection_heads[scale_idx]``
 
     When ``kind == 'uni'``: ``backbone_model`` is a raw UNI module (no LoRA,
     no projection). Writes ``z_uni_<scale>`` + ``z_uni_<scale>_cls``.

@@ -1,0 +1,46 @@
+# Example architecture: use the configuration matching your checkpoint.
+model:
+  name: sigmma
+  checkpoint_path: ./weights/sigmma.pth
+  pretrained_image_encoder: UNI
+  pretrained_image_encoder_ckpt_path: ./weights/UNI2-h
+  image_encoder_input_dim: 1536
+  image_encoder_output_dim: 512
+  spatial_encoder_input_dim: 384
+  spatial_encoder_output_dim: 512
+  num_resolutions: 3
+  contrastive_temperature: 0.07
+  gumbel_temperature: 0.5
+  edge_threshold: 0.5
+  candidate_top_k: 8
+  candidate_sim_threshold: 0.5
+  dropout: 0.1
+  activation: leaky_relu
+  aggregate: attn_pool
+  num_graph_layers: 2
+  image_mlp_hidden_dim: 2048
+  image_attn_pool_heads: 8
+  lora:
+    enabled: true
+    r: 16
+    alpha: 32
+    dropout: 0.05
+    target_modules:
+    - qkv
+    - proj
+    bias: none
+    per_scale: false
+test:
+  batch_size: 1
+  num_workers: 0
+  scale_idx: 2
+dataset:
+  split_type: section_split
+  query_dataset:
+    manifest_path: ./manifest.csv
+    pretrained_cell_embedding: true
+    type_pretrained_cell_embedding: nemo
+    latent_embedding_name: nemo_latent
+    fov_size: 256
+    num_resolutions: 3
+    tissue_filtering_threshold: 20000

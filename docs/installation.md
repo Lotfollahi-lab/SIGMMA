@@ -17,8 +17,7 @@ equivalence, or biological evaluation results.
 
 ## Validated Conda route
 
-Use micromamba (tested) or a compatible Conda installation. From the SIGMMA
-source checkout, choose one profile:
+Use micromamba (tested) or a compatible Conda installation. Choose one profile:
 
 ```bash
 # CPU
@@ -42,15 +41,18 @@ Then, in the chosen environment:
 # Prefer the environment's C++ runtime over an older system libstdc++.
 export LD_LIBRARY_PATH="$CONDA_PREFIX/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export DGLBACKEND=pytorch
-python -m pip wheel --no-deps --wheel-dir ./dist/validated .
-python -m pip install ./dist/validated/sigmma-2.0.0-py3-none-any.whl
+python -m pip install sigmma==0.1.0
 python -m pip check
-python scripts/check_install.py --device cpu  # use --device cuda for CUDA
 sigmma-train --help
 sigmma-retrieval --help
 sigmma-extract-embeddings --help
 sigmma-precompute-hier-cache --help
 ```
+
+If you have a source checkout, `python scripts/check_install.py --device cpu`
+(or `--device cuda`) checks core imports and graph forward/backward operations.
+To build from source instead, use `python -m pip wheel --no-deps --wheel-dir
+./dist/validated .` and install the resulting wheel with pip.
 
 The explicit library path was necessary on the validation host: otherwise
 SciPy loaded an older system `libstdc++.so.6` lacking `CXXABI_1.3.15`.
@@ -85,10 +87,10 @@ python -m pip install 'torch==2.3.1' 'torchvision==0.18.1' --index-url https://d
 python -m pip install 'dgl==2.4.0+cu121' --find-links https://data.dgl.ai/wheels/torch-2.3/cu121/repo.html
 ```
 
-Then install the wheel supplied with the release (replace the example path):
+Then install the published package:
 
 ```bash
-python -m pip install /path/to/sigmma-2.0.0-py3-none-any.whl
+python -m pip install sigmma==0.1.0
 python -m pip check
 ```
 
