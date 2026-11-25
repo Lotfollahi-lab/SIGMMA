@@ -1,12 +1,12 @@
 [build-system]
-requires = ["hatchling>=1.27"]
+requires = ["hatchling>=1.27", "hatch-fancy-pypi-readme>=24.1"]
 build-backend = "hatchling.build"
 
 [project]
 name = "sigmma"
-version = "2.0.0"
+version = "0.1.0"
 description = "Spatial transcriptome–histology image representation learning via hierarchical graph-based multi-scale multi-modal alignment"
-readme = "README.md"
+dynamic = ["readme"]
 license = "CC-BY-NC-4.0"
 license-files = ["LICENSE"]
 authors = [{ name = "Dabin Jeong", email = "dnj01208@gmail.com" }]
@@ -87,8 +87,8 @@ sigmma-extract-embeddings = "sigmma.cli.extract_embeddings:main"
 sigmma-precompute-hier-cache = "sigmma.cli.precompute_hier_cache:main"
 
 [project.urls]
-Homepage = "https://github.com/Lotfollahi-lab/SIGMMA2.0"
-Repository = "https://github.com/Lotfollahi-lab/SIGMMA2.0"
+Homepage = "https://github.com/Lotfollahi-lab/SIGMMA"
+Repository = "https://github.com/Lotfollahi-lab/SIGMMA"
 
 [dependency-groups]
 release = ["build>=1.2", "twine>=6.1"]
@@ -113,3 +113,12 @@ packages = ["sigmma"]
 
 [tool.hatch.build.targets.sdist]
 only-include = ["sigmma", "README.md", "LICENSE", "pyproject.toml"]
+
+# PyPI description: README.md without the logo header (relative image paths
+# do not resolve on PyPI).
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+start-after = "<!-- pypi-start: the PyPI description begins below this line (logo omitted) -->\n"
