@@ -5,6 +5,7 @@ Start with the quickstart, then choose a notebook for your task. Read the
 
 | Tutorial | What you will produce |
 |---|---|
+| {doc}`new_data_preprocessing` | Registered Xenium + H&E, TERRA features and a validated SIGMMA manifest |
 | {doc}`quickstart` | A manifest, a runnable configuration, and paired FOV embeddings |
 | {doc}`multiscale_embeddings` | Cell embeddings and spatial domains at three scales |
 | {doc}`cross_modal_retrieval` | Paired recall and cross-section image-to-spatial retrieval |
@@ -36,6 +37,7 @@ update. Recorded plots illustrate the original data/checkpoint combination.
 :caption: Getting started
 
 quickstart
+new_data_preprocessing
 ```
 
 ```{toctree}

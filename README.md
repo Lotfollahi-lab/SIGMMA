@@ -221,6 +221,11 @@ model terms; SIGMMA does not redistribute the weights.
 
 ### 1. Prepare data
 
+For new Xenium bundles and matching H&E images, follow the
+[raw-data preprocessing tutorial](docs/tutorials/new_data_preprocessing.md).
+The `sigmma-preprocess` adapter runs the separate SIGMMA preprocessing workflow
+and validates its outputs before writing a SIGMMA manifest.
+
 A preprocessed example dataset is available
 [on Hugging Face](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD).
 
