@@ -1,28 +1,51 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/_static/logo/sigmma_logo_dark.svg">
+    <img src="docs/_static/logo/sigmma_logo.svg" alt="SIGMMA" width="420">
+  </picture>
+</p>
+
 <!-- pypi-start: the PyPI description begins below this line (logo omitted) -->
+<div align="center">
+
 # SIGMMA, σ
-Spatial transcriptome–histology Image representation learning via hierarchical Graph-based Multi-scale Multi-modal Alignment
+
+**Spatial transcriptome–histology Image representation learning via hierarchical Graph-based Multi-scale Multi-modal Alignment**
+
+[![Docs](https://img.shields.io/badge/Docs-Read%20the%20Docs-8ca1af)](https://sigmma.readthedocs.io/)
+[![PyPI](https://img.shields.io/pypi/v/sigmma?color=2563eb)](https://pypi.org/project/sigmma/)
+[![Python](https://img.shields.io/badge/Python-3.11-3776ab)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey)](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/LICENSE)
+[![Dataset](https://img.shields.io/badge/Dataset-HEST--1k%20LUAD-15803d)](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD)
+
+[Documentation](https://sigmma.readthedocs.io/) · [Installation](#installation) · [Quick start](#quick-start) · [Downstream tasks](#downstream-tasks) · [Citation](#citation)
+
+</div>
+
+SIGMMA learns joint representations of **H&E histology images** and **spatial
+transcriptomics** by aligning the two modalities at **multiple spatial scales**.
+Each tile is paired with a **hierarchical cell graph** of sub-fields of view, so
+the image and spatial embeddings agree from the cell niche up to the tissue region.
+
+The image encoder is built on the pathology foundation model **UNI2-h**. Cell
+features are precomputed embeddings read from `AnnData.obsm` (for example
+**TERRA**), so SIGMMA does not depend on any cell-embedding model at runtime.
 
 ## Installation
 
-SIGMMA is published on PyPI as [`sigmma`](https://pypi.org/project/sigmma/).
-It targets **Linux x86_64, Python 3.11, PyTorch 2.3.1, torchvision 0.18.1,
-NumPy 1.x and DGL 2.4.0**.
-Choose either CPU or CUDA 12.1; install the matching PyTorch and DGL builds
-before installing `sigmma`. DGL is a required runtime dependency.
-The package declares `dgl==2.4.0`, which accepts both `2.4.0` and `2.4.0+cu121`
-builds. DGL 2.4.0 is not available on PyPI, so `pip install sigmma` alone
-cannot resolve it: install DGL from the official DGL index first, as below.
+### 1. Set up the environment
 
-**Validation status (2026-11-12):** fresh environments using official DGL team
-Conda binaries passed SIGMMA wheel installation, `pip check`, core imports,
-graph forward/backward checks on CPU and A100 CUDA 12.1, and all four CLI
-`--help` checks. See [the tested Conda route](docs/installation.md#validated-conda-route)
-and `packaging_outputs/conda_validation_20261112/` for commands and evidence.
-This validates the locally built SIGMMA wheel, not the PyPI artifact or model
-accuracy. Direct DGL pip wheel installation remains unverified: `data.dgl.ai`
-still terminates TLS before sending a certificate. Previous GPU gradient
-comparisons used a diagnostic objective containing KL; they do not establish
-training-gradient equivalence.
+SIGMMA is published on PyPI as [`sigmma`](https://pypi.org/project/sigmma/)
+(current release: `0.1.0`). It targets:
+
+- **Linux x86_64**, **Python 3.11**
+- **PyTorch 2.3.1**, **torchvision 0.18.1**, **NumPy 1.x**
+- **DGL 2.4.0** (required), either CPU or **CUDA 12.1** (with a compatible NVIDIA driver)
+
+Install the matching PyTorch and DGL builds before installing `sigmma`. DGL
+2.4.0 is not available on PyPI, so `pip install sigmma` alone cannot resolve it:
+install DGL from the official DGL index first. The package declares
+`dgl==2.4.0`, which accepts both `2.4.0` and `2.4.0+cu121` builds.
 
 Start in a new environment:
 
@@ -40,7 +63,7 @@ python -m pip install 'torch==2.3.1' 'torchvision==0.18.1' --index-url https://d
 python -m pip install 'dgl==2.4.0' --find-links https://data.dgl.ai/wheels/torch-2.3/repo.html
 ```
 
-For CUDA 12.1 (with a compatible NVIDIA driver):
+For CUDA 12.1:
 
 ```bash
 python -m pip install 'numpy>=1.26,<2'
@@ -48,16 +71,12 @@ python -m pip install 'torch==2.3.1' 'torchvision==0.18.1' --index-url https://d
 python -m pip install 'dgl==2.4.0+cu121' --find-links https://data.dgl.ai/wheels/torch-2.3/cu121/repo.html
 ```
 
-Then install SIGMMA from PyPI:
+Then install SIGMMA and, from a source checkout, run the installation check:
 
 ```bash
-python -m pip install sigmma
+python -m pip install sigmma==0.1.0
 python -m pip check
-```
 
-From a source checkout, run the installation check using that environment:
-
-```bash
 python scripts/check_install.py --device cpu
 # Or, on a GPU host using the CUDA environment:
 python scripts/check_install.py --device cuda
@@ -69,6 +88,20 @@ or establish checkpoint accuracy. CPU and CUDA checks are separate; a CPU pass
 does not validate GPU execution. Use a regular `pip install sigmma` for this
 check, not an editable install that could hide missing package files.
 
+<details>
+<summary><b>Validation status and DGL troubleshooting</b></summary>
+
+**Validation status (2026-11-12):** fresh environments using official DGL team
+Conda binaries passed SIGMMA wheel installation, `pip check`, core imports,
+graph forward/backward checks on CPU and A100 CUDA 12.1, and all four CLI
+`--help` checks. See [the tested Conda route](https://sigmma.readthedocs.io/en/latest/installation.html#validated-conda-route)
+and `packaging_outputs/conda_validation_20261112/` for commands and evidence.
+This validated an earlier local wheel build, not the published 0.1.0 artifact
+or model accuracy. Direct DGL pip wheel installation remains unverified: `data.dgl.ai`
+still terminates TLS before sending a certificate. Previous GPU gradient
+comparisons used a diagnostic objective containing KL; they do not establish
+training-gradient equivalence.
+
 If `data.dgl.ai` fails during TLS negotiation, stop at the DGL installation step.
 Do not silently substitute another DGL version or disable TLS verification.
 Use the separate wheel download procedure below if the installation machine
@@ -76,7 +109,7 @@ cannot access the official DGL index.
 The historical research `poetry.lock` and `uv.lock` are not release locks for
 this release; fresh release locks await access to the stable DGL artifacts.
 
-### Download and install the DGL wheel separately
+#### Download and install the DGL wheel separately
 
 You can download DGL separately and transfer the wheel to the installation
 machine. Use the official index matching your PyTorch build:
@@ -115,7 +148,7 @@ command with a local wheel installation:
 ```bash
 # Replace this path with the exact transferred DGL wheel filename.
 python -m pip install /path/to/dgl-wheel.whl
-python -m pip install sigmma
+python -m pip install sigmma==0.1.0
 python -m pip check
 python scripts/check_install.py --device cpu
 # Use --device cuda instead for the CUDA environment on a GPU host.
@@ -132,23 +165,29 @@ Sources: [DGL installation](https://www.dgl.ai/pages/start.html),
 [DGL 2.4 release notes](https://github.com/dmlc/dgl/releases/tag/v2.4.0),
 [PyTorch version-specific installation](https://pytorch.org/get-started/previous-versions/).
 
-SIGMMA constructs UNI2-h with `timm`; no local UNI package is required.
-Download the pretrained weights separately as described below.
+</details>
 
-TERRA (formerly NicheJEPA) is not a SIGMMA runtime dependency. SIGMMA reads
-precomputed cell embeddings from `AnnData.obsm`; generating those embeddings
-belongs to a separate preprocessing environment. Set `latent_embedding_name`
-to the stored embedding key. The default is `terra` / `terra_latent`. If that
-key is absent, automatic selection falls back to `nemo_latent` with a warning.
-Explicit `latent_embedding_name` values are always used as written, without
-fallback. Legacy `type_pretrained_cell_embedding: nemo` configs still select
-`nemo_latent`. No embedding model is imported and no stored arrays are renamed.
+<details>
+<summary><b>Source install and optional extras</b></summary>
 
-## Required UNI2-h weights
+After installing the matching PyTorch and DGL builds above, install the core
+from this checkout with `python -m pip install .`, or use
+`python -m pip install '.[analysis]'` for downstream analysis dependencies.
+Baseline dependencies belong to the separately installed `benchmarks/` project
+(see [Comparison baselines](#comparison-baselines)).
+No default research group or cluster-local package sources are required.
 
-SIGMMA's default image backbone is **UNI2-h**. Its pretrained weights are an
-external model asset: they are not included in the SIGMMA wheel and are not
-automatically downloaded by package installation.
+The SIGMMA command-line entrypoints are `sigmma-train`, `sigmma-retrieval`,
+`sigmma-extract-embeddings`, and `sigmma-precompute-hier-cache`.
+
+</details>
+
+### 2. Download the UNI2-h weights
+
+SIGMMA's default image backbone is **UNI2-h**, constructed with `timm`; no local
+UNI package is required. Its pretrained weights are an external model asset:
+they are not included in the SIGMMA wheel and are not automatically downloaded
+by package installation.
 
 1. Request access and accept the terms on the official
    [MahmoodLab/UNI2-h model page](https://huggingface.co/MahmoodLab/UNI2-h).
@@ -178,50 +217,79 @@ checkpoint. The separate trained SIGMMA checkpoint belongs in
 `model.checkpoint_path`. Download access and use remain subject to the upstream
 model terms; SIGMMA does not redistribute the weights.
 
-## Comparison baselines
+## Quick start
 
-Comparison models are maintained in the separately installed
-[`benchmarks/`](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/benchmarks/README.md) project and are excluded from the SIGMMA
-wheel. Install `./benchmarks[retrieval]` to run retrieval baselines; the original
-baseline script paths remain forwarding entrypoints. SIGMMA itself does not
-require the benchmark package.
+### 1. Prepare data
 
-### Optional analysis and source installation
+For new Xenium bundles and matching H&E images, follow the
+[raw-data preprocessing tutorial](docs/tutorials/new_data_preprocessing.md).
+The `sigmma-preprocess` adapter runs the separate SIGMMA preprocessing workflow
+and validates its outputs before writing a SIGMMA manifest.
 
-After installing the matching PyTorch and DGL builds above, install the core
-from this checkout with `python -m pip install .`, or use
-`python -m pip install '.[analysis]'` for downstream analysis dependencies.
-Baseline dependencies belong to the separately installed `benchmarks/` project.
-No default research group or cluster-local package sources are required.
-The SIGMMA command-line entrypoints are `sigmma-train`, `sigmma-retrieval`,
-`sigmma-extract-embeddings`, and `sigmma-precompute-hier-cache`.
+A preprocessed example dataset is available
+[on Hugging Face](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD).
 
-### Data paths
+Datasets are described by a manifest CSV with one row per section and these columns:
 
-Specify data paths in your manifest and model paths in your configuration.
-There are no server-specific data defaults. Cache helpers use `~/.cache/sigmma`;
+| Column | Content |
+|---|---|
+| `sample_name` | Section identifier (rows sharing a name are deduplicated, keeping the last) |
+| `hematoxylin_eosin_image` | H&E image (zarr) |
+| `spatial_preprocessed` | Preprocessed spatial transcriptomics AnnData file (h5ad format) |
+| `annotation` | Optional annotation file path, passed through as sample metadata; may be left empty |
+| `index` | Tile index array (zarr, shape `(n_tiles, 3)`): `y_start`, `x_start` in image pixels and a tissue score compared with `tissue_filtering_threshold` |
+
+Each AnnData needs `obsm["spatial"]` (cell coordinates in µm),
+`obsp["spatial_connectivities"]` (cell graph) and the cell embedding selected by
+`latent_embedding_name` (see [Cell latent embeddings](#cell-latent-embeddings)).
+
+Specify data paths in your manifest and model paths in your configuration;
+there are no server-specific data defaults. Cache helpers use `~/.cache/sigmma`;
 set `SIGMMA_CACHE_ROOT` before import to choose another location, or pass `root=`.
 For tissue mapping, set `SIGMMA_SAMPLE_METADATA_CSV`; for SVG tissue labels, set
 `SIGMMA_SECTION_PANEL_CSV` (or pass `csv_path=` to the corresponding loader).
 These CSVs are required only when their mapping functions are called.
-See [Data paths](docs/installation.md#data-paths) for examples and migration.
+See [Data paths](https://sigmma.readthedocs.io/en/latest/installation.html#data-paths) for examples and migration.
 
-## Data Preparation
-You can download dataset in the following [link](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD)
+### 2. Configure
 
-## Model Training
+Example configurations are in [`configs/`](https://github.com/Lotfollahi-lab/SIGMMA/tree/main/configs):
+
+| Task | Template |
+|---|---|
+| Training | `configs/in-house_train_sigmma.yaml` |
+| Cross-modal retrieval | `configs/in-house_retrieval_sigmma.yaml` |
+| Gene expression linear probing | `configs/in-house_linear_probing_sigmma.yaml` |
+
+These are templates from the original experiments and contain paths specific to
+the authors' cluster. Copy one and replace, at minimum:
+
+- `dataset.*.manifest_path`: your manifest CSV for each split
+- `model.pretrained_image_encoder_ckpt_path`: the directory holding the UNI2-h weights
+- `model.checkpoint_path`: a trained SIGMMA checkpoint (retrieval and probing only)
+- `dataset.*.hier_cache_dir`: remove it, or point it to a cache you built
+  (see [Optional: hierarchical graph cache](#3-train))
+
+### 3. Train
+
+Before training, follow [Download the UNI2-h weights](#2-download-the-uni2-h-weights)
+and set the backbone directory in your configuration. Training requires a CUDA
+GPU and is launched through `torchrun`:
+
+```bash
+torchrun --standalone --nproc_per_node 1 -m sigmma.cli.train -config_file my_train_sigmma.yaml -out_dir ${output_dir}/train_sigmma
 ```
-torchrun --standalone --nproc_per_node 1 -m sigmma.cli.train -config_file ${run_dir}/configs/hest1k-LUAD_train_sigmma.yaml -out_dir ${output_dir}/hest1k-LUAD_sigmma
-```
 
-Before training, follow [Required UNI2-h weights](#required-uni2-h-weights) to download the backbone checkpoint and configure its directory.
+Checkpoints are written to the output directory as `checkpoint-step{N}.pth`.
 
-### Optional: hierarchical graph cache
+<details>
+<summary><b>Optional: hierarchical graph cache</b></summary>
+
 By default the dataset builds each tile's hierarchical sub-FOV graph on the fly,
 so no cache is needed. For large training runs where data loading is the
 bottleneck, pre-compute the graphs once per manifest:
 
-```
+```bash
 sigmma-precompute-hier-cache --manifest /path/to/MANIFEST_train.csv --out_dir /path/to/hier_cache \
   --fov_size 256 --num_resolutions 3 --tissue_threshold 20000 --n_workers 16
 ```
@@ -235,23 +303,74 @@ without a cache file fall back to on-the-fly construction. Add
 source paths and options instead of section name; rebuild such a cache if the
 data is moved.
 
-## Downstream Tasks
-``` 
-# 1. gene expression prediction task
-python scripts/benchmark_gex_prediction.py -config_file ${run_dir}/configs/hest1k-LUAD_linear_probing_sigmma.yaml -out_dir ${output_dir}/outputs/hest1k-LUAD_linear_probing_gex_prediction_sigmma
+</details>
 
-# 2. cross-modal retrieval
-sigmma-retrieval -config_file ${run_dir}/configs/hest1k-LUAD_retrieval_sigmma.yaml -out_dir ${output_dir}/hest1k-LUAD_retrieval_sigmma
+## Downstream tasks
+
+Set `model.checkpoint_path` in these configurations to a SIGMMA checkpoint from
+the [Train](#3-train) step.
+
+```bash
+# 1. cross-modal retrieval
+sigmma-retrieval -config_file my_retrieval_sigmma.yaml -out_dir ${output_dir}/retrieval_sigmma
+
+# 2. per-FOV image and spatial embeddings at every scale
+sigmma-extract-embeddings -config_file my_retrieval_sigmma.yaml -out_dir ${output_dir}/embeddings_sigmma
+
+# 3. gene expression prediction (source checkout with the benchmarks project installed)
+python scripts/benchmark_gex_prediction.py -config_file my_linear_probing_sigmma.yaml -out_dir ${output_dir}/linear_probing_sigmma
 ```
 
-Note. SIGMMA checkpoint from *Model training* step should be provided to checkpoint_path in the configurations.
+`sigmma-extract-embeddings` takes a retrieval configuration and writes
+`embeddings.npz`. The gene expression script is not part of the PyPI package:
+it runs from a source checkout and imports `sigmma_benchmarks`, so install
+`./benchmarks` first.
+
+Step-by-step guides, the user guide and the API reference are in the
+[documentation](https://sigmma.readthedocs.io/).
 
 ### Cell latent embeddings
+
+TERRA (formerly NicheJEPA) is not a SIGMMA runtime dependency. SIGMMA reads
+precomputed cell embeddings from `AnnData.obsm`; generating those embeddings
+belongs to a separate preprocessing environment.
+
 Set `latent_embedding_name` under each dataset split (`dataset.train`,
 `dataset.validation`, or the evaluation dataset block) to the exact AnnData
 `obsm` key, for example `latent_embedding_name: "terra_latent"` or
 `latent_embedding_name: "cell_emb"`. The selected embedding is used for both
 full-FOV and hierarchical graph features. Its width must match the model's
-`spatial_encoder_input_dim`. Explicit keys override `type_pretrained_cell_embedding`;
-older configs without the key retain the legacy type-to-key mapping.
-Graph caches must match the dataset's cell ordering, coordinates and connectivity.
+`spatial_encoder_input_dim`.
+
+<details>
+<summary><b>Defaults and legacy configs</b></summary>
+
+The default is `terra` / `terra_latent`. If that key is absent, automatic
+selection falls back to `nemo_latent` with a warning. Explicit
+`latent_embedding_name` values are always used as written, without fallback, and
+override `type_pretrained_cell_embedding`. Older configs without the key retain
+the legacy type-to-key mapping; legacy `type_pretrained_cell_embedding: nemo`
+configs still select `nemo_latent`. No embedding model is imported and no stored
+arrays are renamed. Graph caches must match the dataset's cell ordering,
+coordinates and connectivity.
+
+</details>
+
+## Comparison baselines
+
+Comparison models are maintained in the separately installed
+[`benchmarks/`](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/benchmarks/README.md) project and are excluded from the SIGMMA
+wheel. Install `./benchmarks[retrieval]` to run retrieval baselines; the original
+baseline script paths remain forwarding entrypoints. SIGMMA itself does not
+require the benchmark package.
+
+## Citation
+
+The manuscript is in preparation; a citation will be added upon publication.
+
+## License
+
+SIGMMA is released under the
+[Creative Commons Attribution-NonCommercial 4.0 International License](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/LICENSE)
+(CC BY-NC 4.0). Third-party models and data, including the UNI2-h weights,
+remain subject to their own licenses and terms of use.

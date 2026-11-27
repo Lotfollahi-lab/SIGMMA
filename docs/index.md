@@ -9,25 +9,42 @@ transcriptomic side and a pathology foundation model (UNI2-h) on the image side.
 shared embedding space supports cross-modal retrieval, gene expression prediction from
 H&E, and transfer of cell niche annotations to new slides.
 
-::::{grid} 1 2 2 2
+::::{grid} 1 2 2 3
 :gutter: 2
 
-:::{grid-item-card} Installation
+:::{grid-item-card} {octicon}`desktop-download;1.5em;sd-mr-1` Installation
 :link: installation
 :link-type: doc
-Install SIGMMA and the DGL wheel, and separately download the UNI2-h checkpoint.
+
+Set up sigmma with the matching PyTorch and DGL builds, and download the UNI2-h weights.
 :::
 
-:::{grid-item-card} Tutorials
+:::{grid-item-card} {octicon}`light-bulb;1.5em;sd-mr-1` User Guide
+:link: user_guide
+:link-type: doc
+
+Understand the concepts, the inference pipeline, the input data and the three spatial scales.
+:::
+
+:::{grid-item-card} {octicon}`rocket;1.5em;sd-mr-1` Quickstart
+:link: tutorials/quickstart
+:link-type: doc
+
+Run one section end to end and extract paired image and spatial embeddings.
+:::
+
+:::{grid-item-card} {octicon}`book;1.5em;sd-mr-1` Tutorials
 :link: tutorials/index
 :link-type: doc
-End-to-end notebooks: embeddings, retrieval, gene expression and niche transfer.
+
+Learn from worked notebooks: multi-scale embeddings, cross-modal retrieval and niche transfer.
 :::
 
-:::{grid-item-card} API reference
+:::{grid-item-card} {octicon}`code-square;1.5em;sd-mr-1` API
 :link: api/index
 :link-type: doc
-Data loading, model loading, evaluation and application modules.
+
+Detailed descriptions of sigmma's public functions and classes.
 :::
 
 ::::
@@ -37,6 +54,7 @@ Data loading, model loading, evaluation and application modules.
 :maxdepth: 2
 
 installation
+user_guide
 tutorials/index
 api/index
 ```

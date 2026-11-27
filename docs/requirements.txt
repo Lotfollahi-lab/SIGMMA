@@ -1,5 +1,5 @@
 # Docs build only (Read the Docs installs this, not the package itself:
-# sigmma's core dependency dgl>=2.2 is not on PyPI). Heavy runtime imports are
+# sigmma requires DGL 2.4.0 from an external channel). Heavy runtime imports are
 # mocked in conf.py (autodoc_mock_imports).
 sphinx>=7.3,<8.2
 myst-nb>=1.1

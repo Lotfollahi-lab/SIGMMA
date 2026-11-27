@@ -12,7 +12,7 @@ try:
     from importlib.metadata import version as _v
     release = _v("sigmma")
 except Exception:
-    release = "2.0.0"
+    release = "0.1.0"
 version = release
 
 extensions = [
@@ -58,8 +58,14 @@ intersphinx_mapping = {
 html_theme = "sphinx_book_theme"
 html_title = "SIGMMA"
 html_static_path = ["_static"]
+html_favicon = "_static/logo/favicon.png"
 html_theme_options = {
-    "repository_url": "https://github.com/Lotfollahi-lab/SIGMMA2.0",
+    "logo": {
+        "image_light": "_static/logo/sigmma_logo.svg",
+        "image_dark": "_static/logo/sigmma_logo_dark.svg",
+        "alt_text": "SIGMMA",
+    },
+    "repository_url": "https://github.com/Lotfollahi-lab/SIGMMA",
     "repository_branch": "main",
     "path_to_docs": "docs",
     "use_repository_button": True,
