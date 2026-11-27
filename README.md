@@ -8,7 +8,7 @@
 <!-- pypi-start: the PyPI description begins below this line (logo omitted) -->
 <div align="center">
 
-**Spatial transcriptome–histology Image representation learning via hierarchical Graph-based Multi-scale Multi-modal Alignment**
+**SIGMMA: Spatial transcriptome–histology Image representation learning via hierarchical Graph-based Multi-scale Multi-modal Alignment**
 
 [![Docs](https://img.shields.io/badge/Docs-Read%20the%20Docs-8ca1af)](https://sigmma.readthedocs.io/)
 [![PyPI](https://img.shields.io/pypi/v/sigmma?color=2563eb)](https://pypi.org/project/sigmma/)
