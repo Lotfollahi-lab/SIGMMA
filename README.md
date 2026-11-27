@@ -16,7 +16,6 @@
 [![PyPI](https://img.shields.io/pypi/v/sigmma?color=2563eb)](https://pypi.org/project/sigmma/)
 [![Python](https://img.shields.io/badge/Python-3.11-3776ab)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey)](https://github.com/Lotfollahi-lab/SIGMMA/blob/main/LICENSE)
-[![Dataset](https://img.shields.io/badge/Dataset-HEST--1k%20LUAD-15803d)](https://huggingface.co/datasets/AnonymousAuthor42/preprocessed_hest1k_LUAD)
 
 [Documentation](https://sigmma.readthedocs.io/) · [Installation](#installation) · [Quick start](#quick-start) · [Downstream tasks](#downstream-tasks) · [Citation](#citation)
 
